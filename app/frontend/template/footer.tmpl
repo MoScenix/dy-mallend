@@ -1,0 +1,89 @@
+{{ define "footer" }}
+
+</div>
+</main>
+
+<style>
+    /* 确保页面主体至少占满屏幕，将 footer 推到底部 */
+    html,
+    body {
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .content-wrapper {
+        flex: 1 0 auto;
+        /* 让 main 占据剩余所有空间 */
+    }
+
+    /* Footer 样式优化 */
+    .custom-footer {
+        flex-shrink: 0;
+        /* 防止 footer 被压缩 */
+        background-color: #ffffff;
+        border-top: 1px solid #edf2f7;
+        padding: 3rem 0;
+        margin-top: 4rem;
+    }
+
+    .footer-link {
+        color: #718096;
+        text-decoration: none;
+        transition: color 0.2s;
+        font-weight: 500;
+    }
+
+    .footer-link:hover {
+        color: var(--accent-color);
+    }
+
+    .copyright-text {
+        color: #a0aec0;
+        font-size: 0.9rem;
+    }
+
+    .source-code-badge {
+        background-color: var(--light-blue);
+        color: #3182ce;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        display: inline-flex;
+        align-items: center;
+    }
+</style>
+
+<footer class="custom-footer">
+    <div class="container-fluid custom-container">
+        <div class="row align-items-center">
+            <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                <div class="d-flex align-items-center justify-content-center justify-content-md-start">
+                    <i class="fa-solid fa-bag-shopping me-2" style="color: var(--accent-color);"></i>
+                    <span class="fw-bold text-dark">Shop</span>
+                </div>
+            </div>
+
+            <div class="col-md-4 text-center mb-3 mb-md-0">
+                <p class="copyright-text mb-0">
+                    © 2026 <strong>MoScenix</strong>. All rights reserved.
+                </p>
+            </div>
+
+            <div class="col-md-4 text-center text-md-end">
+                <a href="https://github.com/MoScenix" class="footer-link source-code-badge">
+                    <i class="fa-brands fa-github me-2"></i>Source Code
+                </a>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
+{{ end }}

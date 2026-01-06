@@ -1,0 +1,200 @@
+{{ define "product" }}
+{{ template "header" . }}
+
+<style>
+    /* ... 保留之前的 product-detail-container 等样式 ... */
+    .product-detail-container {
+        max-width: 1200px;
+        margin: 1.5rem auto;
+        background: #fff;
+        border-radius: 20px;
+        padding: 2rem;
+        border: 1px solid #f1f4f8;
+    }
+
+    .product-image-box {
+        border-radius: 15px;
+        overflow: hidden;
+        background-color: #f8fafc;
+        border: 1px solid #edf2f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .product-image-box img {
+        max-width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+        object-fit: contain;
+        padding: 2rem;
+    }
+
+    .product-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #2d3748;
+        margin-bottom: 0.8rem;
+    }
+
+    .product-price-tag {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--accent-color);
+        margin-bottom: 1.5rem;
+        display: block;
+    }
+
+    /* --- 新增：评论区样式 --- */
+    .comment-section {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+    }
+
+    .comment-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 1.5rem;
+        border: 1px solid #f1f4f8;
+        margin-bottom: 1rem;
+    }
+
+    .user-avatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #edf2f7;
+    }
+
+    .comment-content {
+        margin-left: 1rem;
+        flex: 1;
+    }
+
+    .comment-user-id {
+        font-weight: 700;
+        color: #2d3748;
+        font-size: 0.95rem;
+    }
+
+    .comment-time {
+        font-size: 0.8rem;
+        color: #a0aec0;
+    }
+
+    .comment-text {
+        color: #4a5568;
+        margin-top: 0.5rem;
+        line-height: 1.5;
+    }
+
+    .comment-imgs img {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        margin-top: 10px;
+        margin-right: 8px;
+        border: 1px solid #edf2f7;
+    }
+
+    /* 评论表单 */
+    .comment-form {
+        background: #f8fafc;
+        border-radius: 16px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .comment-form textarea {
+        border-radius: 10px;
+        border: 1px solid #edf2f7;
+        resize: none;
+    }
+
+    .btn-submit-comment {
+        background-color: var(--accent-color);
+        color: white;
+        border-radius: 8px;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        border: none;
+    }
+</style>
+
+<div class="product-detail-container">
+    <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+            <div class="product-image-box">
+                <img src="{{ .item.Picture }}" alt="{{ .item.Name }}">
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <form action="/cart" method="post" class="ps-lg-4">
+                <h1 class="product-title">{{ .item.Name }}</h1>
+                <span class="product-price-tag">${{ .item.Price }}</span>
+                <p class="product-description">{{ .item.Description }}</p>
+                <input type="hidden" value="{{ .item.Id }}" name="productId">
+                <div class="mb-4">
+                    <label class="form-label small fw-bold text-muted text-uppercase">Quantity</label>
+                    <input type="number" class="form-control" style="width: 100px;" name="productNum" value="1" min="1">
+                </div>
+                <button type="submit" class="btn btn-add-cart"><i class="fa-solid fa-cart-plus me-2"></i>Add to
+                    Cart</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="comment-section">
+    <h3 class="mb-4" style="font-weight: 700; color: #2d3748;">Reviews</h3>
+
+    <div class="comment-form">
+        <form action="/commit/{{ .item.Id }}" method="post" enctype="multipart/form-data">
+            <div class="mb-3">
+                <label class="form-label small fw-bold text-muted">LEAVE A COMMENT</label>
+                <textarea class="form-control" name="context" rows="3"
+                    placeholder="Share your thoughts about this product..." required></textarea>
+            </div>
+            <div class="mb-3">
+                <label class="form-label small fw-bold text-muted">UPLOAD IMAGES</label>
+                <input type="file" class="form-control form-control-sm" name="imgs" multiple accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-submit-comment">Post Comment</button>
+        </form>
+    </div>
+
+    <div class="comment-list">
+        {{ range .comments }}
+        <div class="comment-card d-flex">
+            <img src="/static/{{ .user_id }}.jpg" class="user-avatar" alt="User Avatar"
+                onerror="this.src='/static/default-avatar.jpg'">
+
+            <div class="comment-content">
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="comment-user-id">User #{{ .user_id }}</span>
+                    <span class="comment-time">{{ .time }}</span>
+                </div>
+                <div class="comment-text">
+                    {{ .context }}
+                </div>
+
+                {{ if .img }}
+                <div class="comment-imgs">
+                    {{ range .img }}
+                    <img src="{{ . }}" alt="Comment Image">
+                    {{ end }}
+                </div>
+                {{ end }}
+            </div>
+        </div>
+        {{ else }}
+        <p class="text-center text-muted">No comments yet. Be the first to review!</p>
+        {{ end }}
+    </div>
+</div>
+
+{{ template "footer" . }}
+{{ end }}

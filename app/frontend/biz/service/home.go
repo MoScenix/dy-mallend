@@ -2,8 +2,11 @@ package service
 
 import (
 	"context"
+	"fmt"
 
-	home "github.com/MoScenix/douyin-mall-backend/app/frontend/hertz_gen/frontend/home"
+	common "github.com/MoScenix/douyin-mall-backend/app/frontend/hertz_gen/frontend/common"
+	"github.com/MoScenix/douyin-mall-backend/app/frontend/infra/rpc"
+	rpcproduct "github.com/MoScenix/douyin-mall-backend/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/hertz/pkg/app"
 )
 
@@ -16,11 +19,15 @@ func NewHomeService(Context context.Context, RequestContext *app.RequestContext)
 	return &HomeService{RequestContext: RequestContext, Context: Context}
 }
 
-func (h *HomeService) Run(req *home.Empty) (resp *home.Empty, err error) {
-	//defer func() {
-	// hlog.CtxInfof(h.Context, "req = %+v", req)
-	// hlog.CtxInfof(h.Context, "resp = %+v", resp)
-	//}()
-	// todo edit your code
-	return
+func (h *HomeService) Run(req *common.Empty) (resp map[string]any, err error) {
+	res, err := rpc.ProductClient.SearchProducts(h.Context, &rpcproduct.SearchProductsReq{
+		Query: "",
+	})
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return map[string]any{
+		"items": res.Results,
+	}, err
 }

@@ -20,9 +20,10 @@ var (
 type Config struct {
 	Env string
 
-	Hertz Hertz `yaml:"hertz"`
-	MySQL MySQL `yaml:"mysql"`
-	Redis Redis `yaml:"redis"`
+	Hertz  Hertz  `yaml:"hertz"`
+	MySQL  MySQL  `yaml:"mysql"`
+	Redis  Redis  `yaml:"redis"`
+	Consul Consul `yaml:"consul"`
 }
 
 type MySQL struct {
@@ -47,6 +48,9 @@ type Hertz struct {
 	LogMaxSize      int    `yaml:"log_max_size"`
 	LogMaxBackups   int    `yaml:"log_max_backups"`
 	LogMaxAge       int    `yaml:"log_max_age"`
+}
+type Consul struct {
+	Address string `yaml:"address"`
 }
 
 // GetConf gets configuration instance
@@ -73,7 +77,6 @@ func initConf() {
 		hlog.Error("validate config error - %v", err)
 		panic(err)
 	}
-
 	conf.Env = GetEnv()
 
 	pretty.Printf("%+v\n", conf)

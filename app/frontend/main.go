@@ -4,10 +4,14 @@ package main
 
 import (
 	"context"
+	"os"
 	"time"
 
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/biz/router"
+	futils "github.com/MoScenix/douyin-mall-backend/app/frontend/biz/utils"
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/conf"
+	"github.com/MoScenix/douyin-mall-backend/app/frontend/infra/rpc"
+	"github.com/MoScenix/douyin-mall-backend/app/frontend/middleware"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -19,6 +23,9 @@ import (
 	"github.com/hertz-contrib/logger/accesslog"
 	hertzlogrus "github.com/hertz-contrib/logger/logrus"
 	"github.com/hertz-contrib/pprof"
+	"github.com/hertz-contrib/sessions"
+	"github.com/hertz-contrib/sessions/redis"
+	"github.com/joho/godotenv"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -26,6 +33,8 @@ import (
 func main() {
 	// init dal
 	// dal.Init()
+	godotenv.Load()
+	rpc.Init()
 	address := conf.GetConf().Hertz.Address
 	h := server.New(server.WithHostPorts(address))
 
@@ -39,10 +48,40 @@ func main() {
 	router.GeneratedRegister(h)
 	h.LoadHTMLGlob("template/*")
 	h.Static("/static", "./")
+	h.GET("/sign-in", func(c context.Context, ctx *app.RequestContext) {
+		data := utils.H{
+			"title": "Sign in",
+			"next":  string(ctx.GetHeader("Referer")),
+		}
+		ctx.HTML(consts.StatusOK, "sign-in", futils.WarpResponse(c, ctx, data))
+	})
+	h.GET("/sign-up", func(c context.Context, ctx *app.RequestContext) {
+		data := utils.H{
+			"title": "Sign up",
+			"next":  string(ctx.GetHeader("Referer")),
+		}
+		ctx.HTML(consts.StatusOK, "sign-up", futils.WarpResponse(c, ctx, data))
+	})
+	h.GET("/about", func(c context.Context, ctx *app.RequestContext) {
+		data := utils.H{
+			"title": "About",
+		}
+		ctx.HTML(consts.StatusOK, "about", futils.WarpResponse(c, ctx, data))
+	})
 	h.Spin()
 }
 
 func registerMiddleware(h *server.Hertz) {
+	store, err := redis.NewStore(100, "tcp", conf.GetConf().Redis.Address, "", []byte(os.Getenv("SESSION_SECRET")))
+	if err != nil {
+		panic(err)
+	}
+	store.Options(sessions.Options{MaxAge: 86400, Path: "/"})
+	rs, err := redis.GetRedisStore(store)
+	if err == nil {
+		rs.SetSerializer(sessions.JSONSerializer{})
+	}
+	h.Use(sessions.New("moscenix", store))
 	// log
 	logger := hertzlogrus.NewLogger()
 	hlog.SetLogger(logger)
@@ -81,4 +120,5 @@ func registerMiddleware(h *server.Hertz) {
 
 	// cores
 	h.Use(cors.Default())
+	middleware.Register(h)
 }

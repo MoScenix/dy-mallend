@@ -1,0 +1,18 @@
+FROM golang:1.25.5
+
+WORKDIR /usr/src/gomall
+
+ENV GOPROXY=https://goproxy.cn,https://proxy.golang.org,direct
+ENV GOSUMDB=sum.golang.google.cn
+COPY app/frontend/go.mod app/frontend/go.sum ./app/frontend/
+COPY rpc_gen ./rpc_gen
+
+RUN cd app/frontend && go mod download && go mod verify
+
+COPY app/frontend ./app/frontend
+
+RUN cd app/frontend && go build -v -o server
+
+WORKDIR /usr/src/gomall/app/frontend
+EXPOSE 8080
+CMD ["./server"]

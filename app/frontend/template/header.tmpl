@@ -1,0 +1,203 @@
+{{ define "header" }}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    {{ if $.redirect }}
+    <meta http-equiv="refresh" content="5;url=/checkout/result" />
+    {{ end}}
+    <title>Shop</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --light-blue: #f0f7ff;
+            --soft-blue: #e1effe;
+            --text-main: #4a5568;
+            --accent-color: #63b3ed;
+        }
+
+        /* 核心修改：让 body 成为 Flex 容器并占满全屏高度 */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffffff;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .demo-banner {
+            font-size: 0.75rem;
+            background-color: var(--light-blue);
+            color: #5a8bae;
+            border-bottom: 1px solid var(--soft-blue);
+            font-weight: 500;
+        }
+
+        .navbar {
+            padding: 0.8rem 0;
+            background: rgba(255, 255, 255, 0.98) !important;
+            border-bottom: 1px solid #f1f1f1;
+        }
+
+        .custom-container {
+            padding-left: 3%;
+            padding-right: 3%;
+            width: 100%;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: #2d3748 !important;
+            display: flex;
+            align-items: center;
+            margin-right: 2rem;
+        }
+
+        .logo-icon {
+            color: var(--accent-color);
+            margin-right: 8px;
+        }
+
+        .search-group {
+            background-color: #f7fafc;
+            border-radius: 12px;
+            border: 1px solid #edf2f7;
+            width: 300px;
+            transition: all 0.3s ease;
+        }
+
+        .search-group:focus-within {
+            background-color: #fff;
+            border-color: var(--accent-color);
+            width: 350px;
+        }
+
+        .search-input {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            font-size: 0.9rem;
+        }
+
+        .btn-signin {
+            background-color: var(--light-blue);
+            color: #3182ce;
+            border: none;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 0.5rem 1.5rem;
+        }
+
+        .nav-link {
+            color: var(--text-main) !important;
+            font-weight: 500;
+        }
+
+        .cart-icon-wrapper {
+            font-size: 1.2rem;
+            color: #2d3748;
+            margin: 0 1.5rem;
+        }
+
+        /* 核心修改：让 main 自动填充剩余空间 */
+        .main-content {
+            flex: 1 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+    <header class="sticky-top shadow-sm">
+        <!-- <div class="demo-banner text-center py-2">
+            <span>Demo Mode — CloudWeGo Tech Stack</span>
+        </div> -->
+
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid custom-container">
+                <a class="navbar-brand" href="/">
+                    <i class="fa-solid fa-bag-shopping logo-shopping logo-icon"></i>
+                    <span>Shop</span>
+                </a>
+
+                <button class="navbar-toggler border-0 shadow-none" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navContent">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="navContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Categories
+                            </a>
+                            <ul class="dropdown-menu shadow-sm border-0" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="/category/t-shirt">T-shirts</a></li>
+                                <li><a class="dropdown-item" href="/category/sticker">Stickers</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/about">About</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-flex align-items-center">
+                        <form class="d-flex" action="/search" method="get">
+                            <div class="search-group d-flex align-items-center">
+                                <i class="fa-solid fa-magnifying-glass ms-3 opacity-25"></i>
+                                <input class="form-control search-input" type="search" name="q"
+                                    placeholder="Search items..." value="{{ .q }}">
+                            </div>
+                        </form>
+
+                        <div class="cart-icon-wrapper">
+                            {{ template "cart-num" . }}
+                        </div>
+
+                        {{ if .user_id }}
+                        <div class="dropdown">
+                            <a class="nav-link" href="#" data-bs-toggle="dropdown">
+                                <a class="nav-link p-0" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {{ if .avatar }}
+                                    <img src="{{ .avatar }}" alt="avatar" class="rounded-circle border" width="32"
+                                        height="32" style="object-fit: cover;">
+                                    {{ else }}
+                                    <i class="fa-regular fa-circle-user fs-4 text-dark"></i>
+                                    {{ end }}
+                                </a>
+
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0">
+                                <li><a class="dropdown-item" href="/order">Order Center</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <form action="/auth/logout" method="post" class="m-0">
+                                        <button class="dropdown-item text-danger" type="submit">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                        {{ else }}
+                        <a href="/sign-in" class="btn btn-signin">Sign In</a>
+                        {{ end }}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content pt-5">
+        <div class="container-fluid custom-container">
+            <!-- <h2 class="fw-bold mb-4" style="color: #1a202c;">{{ $.title }}</h2> -->
+            {{ end }}

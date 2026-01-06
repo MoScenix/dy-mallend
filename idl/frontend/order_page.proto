@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package frontend.order;
+
+import "api.proto";
+import "frontend/common.proto";
+
+option go_package = "frontend/order";
+
+message OrderAuthReq {
+  bytes  avatar      = 1[(api.form)="avatar"];
+  string user_name   = 2[(api.form)="user_name"];
+  string description = 3[(api.form)="description"];
+}
+
+message OrderProductPutReq {
+  bytes  picture     = 1[(api.form)="picture"];
+  float  price       = 2[(api.form)="price"];
+  string name        = 3[(api.form)="name"];
+  string description = 4[(api.form)="description"];
+}
+
+message Delete {
+  uint32 id = 1[(api.query)="id"];
+}
+
+service OrderService {
+  rpc OrderAuthChange(OrderAuthReq) returns (common.Empty) {
+    option (api.post)="/order";
+  }
+  rpc OrderAuth(common.Empty) returns (common.Empty) {
+    option (api.get)="/order";
+  }
+  rpc OrderProductPut(OrderProductPutReq) returns (common.Empty) {
+    option (api.post)="/order/product";
+  }
+  rpc OrderProdectDelete(Delete) returns (common.Empty) {
+    option (api.post)="/order/product/delete";
+  }
+}
