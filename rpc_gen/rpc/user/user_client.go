@@ -14,6 +14,8 @@ type RPCClient interface {
 	Service() string
 	Register(ctx context.Context, Req *user.RegisterReq, callOptions ...callopt.Option) (r *user.RegisterResp, err error)
 	Login(ctx context.Context, Req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error)
+	GetAuth(ctx context.Context, Req *user.GetAuthReq, callOptions ...callopt.Option) (r *user.GetAuthResp, err error)
+	AuthChange(ctx context.Context, Req *user.AuthChangeReq, callOptions ...callopt.Option) (r *user.AuthChangeResp, err error)
 }
 
 func NewRPCClient(dstService string, opts ...client.Option) (RPCClient, error) {
@@ -48,4 +50,12 @@ func (c *clientImpl) Register(ctx context.Context, Req *user.RegisterReq, callOp
 
 func (c *clientImpl) Login(ctx context.Context, Req *user.LoginReq, callOptions ...callopt.Option) (r *user.LoginResp, err error) {
 	return c.kitexClient.Login(ctx, Req, callOptions...)
+}
+
+func (c *clientImpl) GetAuth(ctx context.Context, Req *user.GetAuthReq, callOptions ...callopt.Option) (r *user.GetAuthResp, err error) {
+	return c.kitexClient.GetAuth(ctx, Req, callOptions...)
+}
+
+func (c *clientImpl) AuthChange(ctx context.Context, Req *user.AuthChangeReq, callOptions ...callopt.Option) (r *user.AuthChangeResp, err error) {
+	return c.kitexClient.AuthChange(ctx, Req, callOptions...)
 }

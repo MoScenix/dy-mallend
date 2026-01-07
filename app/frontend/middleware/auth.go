@@ -2,11 +2,11 @@ package middleware
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/biz/utils"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/hertz-contrib/sessions"
 )
 
@@ -25,29 +25,14 @@ func GlobalAuth() app.HandlerFunc {
 
 func Auth() app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
-		session := sessions.Default(c)
-		path := string(c.Path())
-		if path == "/sign-in" || path == "/sign-up" || path == "/ping" ||
-			strings.HasPrefix(path, "/static") || string(c.Method()) != "GET" {
-			c.Next(ctx)
-			return
-		}
-		userId := session.Get("user_id")
-		if userId == nil {
-			byteRef := c.GetHeader("Referer")
-			ref := string(byteRef)
-			next := "/sign-in"
-			if ref != "" {
-				if utils.ValidateNext(ref) {
-					next = fmt.Sprintf("%s?next=%s", next, ref)
-				}
+		path := c.Path()
+		if ctx.Value(utils.UserIdKey) == nil {
+			if strings.HasPrefix(string(path), "/order") {
+				c.Redirect(consts.StatusFound, []byte("/sign-in"))
+				c.Abort()
+				return
 			}
-			c.Redirect(302, []byte(next))
-			c.Abort()
-			c.Next(ctx)
-			return
 		}
-		ctx = context.WithValue(ctx, utils.UserIdKey, userId)
 		c.Next(ctx)
 	}
 }

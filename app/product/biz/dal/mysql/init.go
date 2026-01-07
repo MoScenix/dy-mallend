@@ -24,6 +24,7 @@ func Init() {
 			SkipDefaultTransaction: true,
 		},
 	)
+	fmt.Println(dsn)
 	if err != nil {
 		panic(err)
 	}

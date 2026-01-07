@@ -15,7 +15,7 @@ services:
       - "3306:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: demo_proto
+      MYSQL_DATABASE: dy_db
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -34,13 +34,15 @@ services:
       timeout: 3s
       retries: 30
 
-  frontend:
-    image: app-frontend:dev
+  user:
+    # image: app-user:dev
     build:
       context: .
-      dockerfile: docker_files/DockerFile.frontend
+      dockerfile: docker_files/DockerFile.user
     ports:
-      - "8080:8080"
+      - "8083:8080"
+    environment:
+      - GO_ENV=online
     depends_on:
       consul:
         condition: service_healthy
@@ -48,6 +50,45 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      
+
+  product:
+    # image: app-product:dev
+    build:
+      context: .
+      dockerfile: docker_files/DockerFile.product
+    ports:
+      - "8082:8080"
+    environment:
+      - GO_ENV=online
+    depends_on:
+      consul:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # frontend:
+  #   # image: app-frontend:dev
+  #   build:
+  #     context: .
+  #     dockerfile: docker_files/DockerFile.frontend
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - GO_ENV=online
+  #   depends_on:
+  #     consul:
+  #       condition: service_healthy
+  #     mysql:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     user:
+  #       condition: service_started
+  #     product:
+  #       condition: service_started
 
 volumes:
   mysql_data:

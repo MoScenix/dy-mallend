@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/MoScenix/douyin-mall-backend/app/user/biz/dal/mysql"
 	"github.com/MoScenix/douyin-mall-backend/app/user/biz/model"
@@ -24,7 +23,6 @@ func (s *LoginService) Run(req *user.LoginReq) (resp *user.LoginResp, err error)
 	if req.Email == "" || req.Password == "" {
 		return nil, errors.New("email or password is empty")
 	}
-	fmt.Println(111)
 	row, err := model.GetByEmail(mysql.DB, req.Email)
 	if err != nil {
 		return nil, err

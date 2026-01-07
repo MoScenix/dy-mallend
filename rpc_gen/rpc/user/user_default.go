@@ -24,3 +24,21 @@ func Login(ctx context.Context, req *user.LoginReq, callOptions ...callopt.Optio
 	}
 	return resp, nil
 }
+
+func GetAuth(ctx context.Context, req *user.GetAuthReq, callOptions ...callopt.Option) (resp *user.GetAuthResp, err error) {
+	resp, err = defaultClient.GetAuth(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "GetAuth call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}
+
+func AuthChange(ctx context.Context, req *user.AuthChangeReq, callOptions ...callopt.Option) (resp *user.AuthChangeResp, err error) {
+	resp, err = defaultClient.AuthChange(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "AuthChange call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}

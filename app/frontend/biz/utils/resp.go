@@ -2,6 +2,8 @@ package utils
 
 import (
 	"context"
+	"os"
+	"strconv"
 
 	"github.com/cloudwego/hertz/pkg/app"
 )
@@ -19,6 +21,11 @@ func SendSuccessResponse(ctx context.Context, c *app.RequestContext, code int, d
 }
 func WarpResponse(ctx context.Context, c *app.RequestContext, content map[string]any) map[string]any {
 	content["user_id"] = ctx.Value(UserIdKey)
-	//fmt.Println(content["user_id"])
+	if ctx.Value(UserIdKey) != nil {
+		userIdStr := strconv.Itoa(int(ctx.Value(UserIdKey).(float64)))
+		if _, statErr := os.Stat("./static/image/avatar/" + userIdStr + ".jpg"); statErr == nil {
+			content["avatar"] = "./static/image/avatar/" + userIdStr + ".jpg"
+		}
+	}
 	return content
 }

@@ -12,6 +12,76 @@ var (
 	_ = fastpb.Skip
 )
 
+func (x *AuthChangeReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 3:
+		offset, err = x.fastReadField3(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_AuthChangeReq[number], err)
+}
+
+func (x *AuthChangeReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadUint32(buf, _type)
+	return offset, err
+}
+
+func (x *AuthChangeReq) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.UserName, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *AuthChangeReq) fastReadField3(buf []byte, _type int8) (offset int, err error) {
+	x.Description, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *AuthChangeResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_AuthChangeResp[number], err)
+}
+
+func (x *AuthChangeResp) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.Success, offset, err = fastpb.ReadBool(buf, _type)
+	return offset, err
+}
+
 func (x *RegisterReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
 	switch number {
 	case 1:
@@ -162,6 +232,116 @@ func (x *LoginResp) fastReadField2(buf []byte, _type int8) (offset int, err erro
 	return offset, err
 }
 
+func (x *GetAuthReq) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 1:
+		offset, err = x.fastReadField1(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetAuthReq[number], err)
+}
+
+func (x *GetAuthReq) fastReadField1(buf []byte, _type int8) (offset int, err error) {
+	x.UserId, offset, err = fastpb.ReadInt32(buf, _type)
+	return offset, err
+}
+
+func (x *GetAuthResp) FastRead(buf []byte, _type int8, number int32) (offset int, err error) {
+	switch number {
+	case 2:
+		offset, err = x.fastReadField2(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	case 3:
+		offset, err = x.fastReadField3(buf, _type)
+		if err != nil {
+			goto ReadFieldError
+		}
+	default:
+		offset, err = fastpb.Skip(buf, _type, number)
+		if err != nil {
+			goto SkipFieldError
+		}
+	}
+	return offset, nil
+SkipFieldError:
+	return offset, fmt.Errorf("%T cannot parse invalid wire-format data, error: %s", x, err)
+ReadFieldError:
+	return offset, fmt.Errorf("%T read field %d '%s' error: %s", x, number, fieldIDToName_GetAuthResp[number], err)
+}
+
+func (x *GetAuthResp) fastReadField2(buf []byte, _type int8) (offset int, err error) {
+	x.UserName, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *GetAuthResp) fastReadField3(buf []byte, _type int8) (offset int, err error) {
+	x.Description, offset, err = fastpb.ReadString(buf, _type)
+	return offset, err
+}
+
+func (x *AuthChangeReq) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	offset += x.fastWriteField2(buf[offset:])
+	offset += x.fastWriteField3(buf[offset:])
+	return offset
+}
+
+func (x *AuthChangeReq) fastWriteField1(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteUint32(buf[offset:], 1, x.GetUserId())
+	return offset
+}
+
+func (x *AuthChangeReq) fastWriteField2(buf []byte) (offset int) {
+	if x.UserName == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetUserName())
+	return offset
+}
+
+func (x *AuthChangeReq) fastWriteField3(buf []byte) (offset int) {
+	if x.Description == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetDescription())
+	return offset
+}
+
+func (x *AuthChangeResp) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *AuthChangeResp) fastWriteField1(buf []byte) (offset int) {
+	if !x.Success {
+		return offset
+	}
+	offset += fastpb.WriteBool(buf[offset:], 1, x.GetSuccess())
+	return offset
+}
+
 func (x *RegisterReq) FastWrite(buf []byte) (offset int) {
 	if x == nil {
 		return offset
@@ -269,6 +449,97 @@ func (x *LoginResp) fastWriteField2(buf []byte) (offset int) {
 	}
 	offset += fastpb.WriteString(buf[offset:], 2, x.GetUerName())
 	return offset
+}
+
+func (x *GetAuthReq) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField1(buf[offset:])
+	return offset
+}
+
+func (x *GetAuthReq) fastWriteField1(buf []byte) (offset int) {
+	if x.UserId == 0 {
+		return offset
+	}
+	offset += fastpb.WriteInt32(buf[offset:], 1, x.GetUserId())
+	return offset
+}
+
+func (x *GetAuthResp) FastWrite(buf []byte) (offset int) {
+	if x == nil {
+		return offset
+	}
+	offset += x.fastWriteField2(buf[offset:])
+	offset += x.fastWriteField3(buf[offset:])
+	return offset
+}
+
+func (x *GetAuthResp) fastWriteField2(buf []byte) (offset int) {
+	if x.UserName == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 2, x.GetUserName())
+	return offset
+}
+
+func (x *GetAuthResp) fastWriteField3(buf []byte) (offset int) {
+	if x.Description == "" {
+		return offset
+	}
+	offset += fastpb.WriteString(buf[offset:], 3, x.GetDescription())
+	return offset
+}
+
+func (x *AuthChangeReq) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	n += x.sizeField2()
+	n += x.sizeField3()
+	return n
+}
+
+func (x *AuthChangeReq) sizeField1() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeUint32(1, x.GetUserId())
+	return n
+}
+
+func (x *AuthChangeReq) sizeField2() (n int) {
+	if x.UserName == "" {
+		return n
+	}
+	n += fastpb.SizeString(2, x.GetUserName())
+	return n
+}
+
+func (x *AuthChangeReq) sizeField3() (n int) {
+	if x.Description == "" {
+		return n
+	}
+	n += fastpb.SizeString(3, x.GetDescription())
+	return n
+}
+
+func (x *AuthChangeResp) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *AuthChangeResp) sizeField1() (n int) {
+	if !x.Success {
+		return n
+	}
+	n += fastpb.SizeBool(1, x.GetSuccess())
+	return n
 }
 
 func (x *RegisterReq) Size() (n int) {
@@ -380,6 +651,57 @@ func (x *LoginResp) sizeField2() (n int) {
 	return n
 }
 
+func (x *GetAuthReq) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField1()
+	return n
+}
+
+func (x *GetAuthReq) sizeField1() (n int) {
+	if x.UserId == 0 {
+		return n
+	}
+	n += fastpb.SizeInt32(1, x.GetUserId())
+	return n
+}
+
+func (x *GetAuthResp) Size() (n int) {
+	if x == nil {
+		return n
+	}
+	n += x.sizeField2()
+	n += x.sizeField3()
+	return n
+}
+
+func (x *GetAuthResp) sizeField2() (n int) {
+	if x.UserName == "" {
+		return n
+	}
+	n += fastpb.SizeString(2, x.GetUserName())
+	return n
+}
+
+func (x *GetAuthResp) sizeField3() (n int) {
+	if x.Description == "" {
+		return n
+	}
+	n += fastpb.SizeString(3, x.GetDescription())
+	return n
+}
+
+var fieldIDToName_AuthChangeReq = map[int32]string{
+	1: "UserId",
+	2: "UserName",
+	3: "Description",
+}
+
+var fieldIDToName_AuthChangeResp = map[int32]string{
+	1: "Success",
+}
+
 var fieldIDToName_RegisterReq = map[int32]string{
 	1: "Email",
 	2: "Password",
@@ -399,4 +721,13 @@ var fieldIDToName_LoginReq = map[int32]string{
 var fieldIDToName_LoginResp = map[int32]string{
 	1: "UserId",
 	2: "UerName",
+}
+
+var fieldIDToName_GetAuthReq = map[int32]string{
+	1: "UserId",
+}
+
+var fieldIDToName_GetAuthResp = map[int32]string{
+	2: "UserName",
+	3: "Description",
 }

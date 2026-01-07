@@ -10,6 +10,15 @@ service ProductCatalogService {
   rpc SearchProducts(SearchProductsReq) returns (SearchProductsResp) {}
   rpc AddProduct(AddProductReq) returns (AddProductResp) {}
   rpc DeleteProduct(DeleteProductReq) returns (DeleteProductResp) {}
+  rpc GetProDucts (GetProDuctsReq) returns (GetProDuctsResp){}
+}
+
+message GetProDuctsReq {
+  uint32 user_id = 1;
+}
+
+message GetProDuctsResp {
+  repeated Product products = 1;
 }
 
 message ListProductsReq{
@@ -36,7 +45,6 @@ message ListProductsResp {
 message GetProductReq {
   uint32 id = 1;
 }
-
 message GetProductResp {
   Product product = 1;
 }
@@ -69,4 +77,5 @@ message DeleteProductReq {
 
 message DeleteProductResp {
   bool success = 1;
+  string picture = 2;
 }

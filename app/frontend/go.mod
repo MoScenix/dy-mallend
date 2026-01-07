@@ -11,13 +11,13 @@ require (
 	github.com/MoScenix/douyin-mall-backend/rpc_gen v0.0.0-00010101000000-000000000000
 	github.com/cloudwego/hertz v0.9.7
 	github.com/cloudwego/kitex v0.15.4
+	github.com/google/uuid v1.1.2
 	github.com/hertz-contrib/cors v0.1.0
 	github.com/hertz-contrib/gzip v0.0.4
 	github.com/hertz-contrib/logger/accesslog v0.0.0-20241107070745-e4ce8c54dd97
 	github.com/hertz-contrib/logger/logrus v1.0.1
 	github.com/hertz-contrib/pprof v0.1.2
 	github.com/hertz-contrib/sessions v1.0.3
-	github.com/joho/godotenv v1.5.1
 	github.com/kitex-contrib/registry-consul v0.2.0
 	github.com/kr/pretty v0.3.1
 	github.com/redis/go-redis/v9 v9.17.2
@@ -55,7 +55,6 @@ require (
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/gomodule/redigo v1.8.9 // indirect
 	github.com/google/btree v1.0.0 // indirect
 	github.com/google/pprof v0.0.0-20240727154555-813a5fbdbec8 // indirect
 	github.com/gorilla/context v1.1.2 // indirect

@@ -54,3 +54,8 @@ func (q *ProductQuery) DeleteProduct(id int) error {
 	err := q.db.WithContext(q.ctx).Model(&Product{}).Delete(&Product{}, id).Error
 	return err
 }
+func (q *ProductQuery) GetProductsById(user_id int) ([]Product, error) {
+	var Products []Product
+	err := q.db.WithContext(q.ctx).Model(&Product{}).Where("user_id = ?", user_id).Find(&Products).Error
+	return Products, err
+}

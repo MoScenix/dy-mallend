@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/MoScenix/douyin-mall-backend/app/user/biz/dal/mysql"
 	"github.com/MoScenix/douyin-mall-backend/app/user/biz/model"
@@ -26,8 +25,6 @@ func (s *RegisterService) Run(req *user.RegisterReq) (resp *user.RegisterResp, e
 		return nil, errors.New("password not equal confirm password")
 	}
 	if req.Email == "" || req.Password == "" {
-		fmt.Println(req.Email)
-		fmt.Println(req.Password)
 		return nil, errors.New("email or password is empty")
 	}
 	PasswordHashed, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)

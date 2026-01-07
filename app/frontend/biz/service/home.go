@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	common "github.com/MoScenix/douyin-mall-backend/app/frontend/hertz_gen/frontend/common"
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/infra/rpc"
@@ -24,7 +23,6 @@ func (h *HomeService) Run(req *common.Empty) (resp map[string]any, err error) {
 		Query: "",
 	})
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return map[string]any{

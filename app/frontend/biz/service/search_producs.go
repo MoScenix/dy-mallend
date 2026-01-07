@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	product "github.com/MoScenix/douyin-mall-backend/app/frontend/hertz_gen/frontend/product"
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/infra/rpc"
@@ -24,7 +23,6 @@ func (h *SearchProducsService) Run(req *product.SearchProductsReq) (resp map[str
 		Query: req.Q,
 	})
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return map[string]any{

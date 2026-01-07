@@ -21,3 +21,14 @@ func GetByEmail(db *gorm.DB, email string) (*User, error) {
 	err := db.Where("email = ?", email).First(&User).Error
 	return &User, err
 }
+func GetByID(db *gorm.DB, id int) (*User, error) {
+	var User User
+	db.Where("id = ?", id).First(&User)
+	return &User, db.Error
+}
+func UpdateUser(db *gorm.DB, user User) error {
+	return db.Model(&User{}).
+		Where("id = ?", user.ID).
+		Select("user_name", "description").
+		UpdateColumns(user).Error
+}

@@ -43,3 +43,10 @@ func (s *ProductCatalogServiceImpl) DeleteProduct(ctx context.Context, req *prod
 
 	return resp, err
 }
+
+// GetProDucts implements the ProductCatalogServiceImpl interface.
+func (s *ProductCatalogServiceImpl) GetProDucts(ctx context.Context, req *product.GetProDuctsReq) (resp *product.GetProDuctsResp, err error) {
+	resp, err = service.NewGetProDuctsService(ctx).Run(req)
+
+	return resp, err
+}

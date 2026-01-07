@@ -22,3 +22,17 @@ func (s *UserServiceImpl) Login(ctx context.Context, req *user.LoginReq) (resp *
 
 	return resp, err
 }
+
+// GetAuth implements the UserServiceImpl interface.
+func (s *UserServiceImpl) GetAuth(ctx context.Context, req *user.GetAuthReq) (resp *user.GetAuthResp, err error) {
+	resp, err = service.NewGetAuthService(ctx).Run(req)
+
+	return resp, err
+}
+
+// AuthChange implements the UserServiceImpl interface.
+func (s *UserServiceImpl) AuthChange(ctx context.Context, req *user.AuthChangeReq) (resp *user.AuthChangeResp, err error) {
+	resp, err = service.NewAuthChangeService(ctx).Run(req)
+
+	return resp, err
+}

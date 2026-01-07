@@ -6,5 +6,5 @@ import (
 
 func Register(r *server.Hertz) {
 	r.Use(GlobalAuth())
-	//r.Use(Auth())
+	r.Use(Auth())
 }

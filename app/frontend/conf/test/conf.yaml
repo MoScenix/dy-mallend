@@ -14,10 +14,9 @@ mysql:
   dsn: "gorm:gorm@tcp(127.0.0.1:3306)/gorm?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
-  address: "redis:6379"
+  address: "127.0.0.1:6379"
   username: ""
   password: ""
   db: 0
-
 consul:
-  address: "consul:8500"
+  address: "127.0.0.1:8500"
