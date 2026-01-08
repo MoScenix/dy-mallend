@@ -1,4 +1,0 @@
-{
-    "makefile.configureOnOpen": true,
-    "protobuf.protoc.path": "/usr/bin/protoc"
-}
