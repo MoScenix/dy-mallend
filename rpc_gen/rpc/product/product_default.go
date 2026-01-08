@@ -60,3 +60,12 @@ func GetProDucts(ctx context.Context, req *product.GetProDuctsReq, callOptions .
 	}
 	return resp, nil
 }
+
+func GetProductsById(ctx context.Context, req *product.GetProductsByIdReq, callOptions ...callopt.Option) (resp *product.GetProductsByIdResp, err error) {
+	resp, err = defaultClient.GetProductsById(ctx, req, callOptions...)
+	if err != nil {
+		klog.CtxErrorf(ctx, "GetProductsById call failed,err =%+v", err)
+		return nil, err
+	}
+	return resp, nil
+}

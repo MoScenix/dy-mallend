@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/MoScenix/douyin-mall-backend/app/product/biz/dal/mysql"
+	"github.com/MoScenix/douyin-mall-backend/app/product/biz/dal/redis"
 	"github.com/MoScenix/douyin-mall-backend/app/product/biz/model"
 	product "github.com/MoScenix/douyin-mall-backend/rpc_gen/kitex_gen/product"
 )
@@ -19,8 +20,7 @@ func NewSearchProductsService(ctx context.Context) *SearchProductsService {
 // Run create note info
 func (s *SearchProductsService) Run(req *product.SearchProductsReq) (resp *product.SearchProductsResp, err error) {
 	// Finish your business logic.
-	fmt.Println(req.Query)
-	productQuery := model.NewProductQuery(s.ctx, mysql.DB)
+	productQuery := model.NewProductProQuery(s.ctx, mysql.DB, redis.RedisClient)
 	products, err := productQuery.SearchProducts(req.Query)
 	if err != nil {
 		return nil, err
@@ -37,5 +37,6 @@ func (s *SearchProductsService) Run(req *product.SearchProductsReq) (resp *produ
 			Price:       p.Price,
 		})
 	}
+	fmt.Println(resp.Results)
 	return resp, err
 }

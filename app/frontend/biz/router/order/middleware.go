@@ -40,3 +40,8 @@ func _orderauthMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _centerMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

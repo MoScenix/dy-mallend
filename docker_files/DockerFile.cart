@@ -1,0 +1,20 @@
+# docker_files/DockerFile.user
+FROM golang:1.25.5
+
+WORKDIR /usr/src/gomall
+
+ENV GOPROXY=https://goproxy.cn,https://proxy.golang.org,direct
+ENV GOSUMDB=sum.golang.google.cn
+
+COPY app/cart/go.mod app/cart/go.sum ./app/cart/
+COPY rpc_gen ./rpc_gen
+
+RUN cd app/cart && go mod download && go mod verify
+
+COPY app/cart ./app/cart
+
+RUN cd app/cart && go build -v -o server
+
+WORKDIR /usr/src/gomall/app/cart
+EXPOSE 8080
+CMD ["./server"]

@@ -1,36 +1,278 @@
 {{ define "cart" }}
-    {{ template "header" . }}
-    <div class="row">
-        <ul class="list-group">
-            {{ range $.items }}
-                <li class="list-group-item">
-                    <div class="card border-0">
-                        <div class="card-body row">
-                            <div class="col-4">
-                                <img src="{{ .Picture }}" style="max-width: 100px;max-height: 50px" alt="">
-                            </div>
-                            <div class="col-8">
-                                <div class="mt-1">{{ .Name }}</div>
-                                <div class="mt-1">Single Price: ${{ .Price }}</div>
-                                <div class="mt-1">Qty: {{ .Qty }}</div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            {{ end}}
-        </ul>
-        {{ if $.items }}
-            <div class="mt-3 mb-5">
-                <div class="float-end">
-                    <div class="m-3 text-danger">Total: ${{ .total }}</div>
-                    <a href="/checkout" class="btn btn-lg btn-success float-end">Check out</a>
-                </div>
-            </div>
-        {{else}}
-            <h1 class="text-center text-danger">Your Cart is empty</h1>
-            <div class="text-center"><a href="/">Shop Hot Sale</a></div>
-        {{ end }}
-    </div>
-    {{ template "footer" . }}
+{{ template "header" . }}
 
+<div class="max-w-6xl mx-auto pb-24 px-[3%]">
+  <div class="flex items-baseline space-x-4 mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Shopping Cart</h1>
+    <span class="text-gray-400 text-lg" id="cart-count">({{ len .cart.items }} items)</span>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <div class="lg:col-span-8 space-y-4">
+      {{ if not .cart.items }}
+      <div class="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
+        <i class="fa-solid fa-cart-shopping text-5xl text-gray-200 mb-4"></i>
+        <p class="text-gray-500 text-lg">Your cart is empty.</p>
+        <a href="/" class="text-accent-color font-semibold mt-4 inline-block hover:underline">Go Shopping →</a>
+      </div>
+      {{ end }}
+
+      {{ range .cart.items }}
+      <div
+        class="bg-white border border-gray-100 rounded-2xl p-5 flex items-center shadow-sm hover:shadow-md transition-all group {{ if .Isdeleted }}opacity-50 grayscale{{ end }}"
+        id="item-{{ .ProductId }}"
+      >
+        <div class="pr-4">
+          <input
+            type="checkbox"
+            {{ if .Isdeleted }}disabled{{ else }}checked{{ end }}
+            class="w-6 h-6 rounded-full border-gray-300 text-accent-color focus:ring-accent-color cursor-pointer item-checkbox"
+            data-id="{{ .ProductId }}"
+            data-price="{{ .Price }}"
+          >
+        </div>
+
+        <a href="/product?id={{ .ProductId }}" class="block flex-shrink-0 group-hover:opacity-90 transition-opacity">
+          <div class="w-24 h-24 bg-gray-50 rounded-xl overflow-hidden flex items-center justify-center border border-gray-50 relative">
+            <img src="{{ .Picture }}" alt="{{ .Name }}" class="w-full h-full object-contain p-2">
+            {{ if .Isdeleted }}
+            <div class="absolute inset-0 bg-black/40 flex items-center justify-center text-white text-[10px] font-bold">
+              UNAVAILABLE
+            </div>
+            {{ end }}
+          </div>
+        </a>
+
+        <div class="flex-grow px-6">
+          <h3 class="font-semibold text-gray-800 text-lg mb-1">{{ .Name }}</h3>
+          <p class="text-gray-400 text-sm line-clamp-1 mb-2">{{ .Description }}</p>
+          <p class="text-accent-color font-bold text-xl">${{ .Price }}</p>
+        </div>
+
+        <div class="flex flex-col items-end">
+          <div class="flex items-center bg-gray-100 rounded-xl p-1 border border-gray-200">
+            <button
+              class="qty-change-btn w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white hover:shadow-sm rounded-lg transition-all"
+              data-id="{{ .ProductId }}"
+              data-delta="-1"
+              {{ if .Isdeleted }}disabled{{ end }}
+            >-</button>
+
+            <input
+              type="number"
+              min="1"
+              step="1"
+              value="{{ .Quantity }}"
+              data-id="{{ .ProductId }}"
+              {{ if .Isdeleted }}disabled{{ end }}
+              class="qty-input  w-16 h-10 text-center font-bold text-gray-700 bg-transparent outline-none"
+            >
+
+            <button
+              class="qty-change-btn w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white hover:shadow-sm rounded-lg transition-all"
+              data-id="{{ .ProductId }}"
+              data-delta="1"
+              {{ if .Isdeleted }}disabled{{ end }}
+            >+</button>
+          </div>
+        </div>
+      </div>
+      {{ end }}
+    </div>
+
+    <div class="lg:col-span-4">
+      <div class="sticky top-28 bg-white border border-gray-100 rounded-[32px] p-8 shadow-sm">
+        <h2 class="text-xl font-bold text-gray-800 mb-6">Order Summary</h2>
+
+        <div class="space-y-4 mb-8">
+          <div class="flex justify-between text-gray-500">
+            <span>Selected Items</span>
+            <span id="selected-count">0</span>
+          </div>
+          <div class="border-t border-gray-50 pt-4 flex justify-between items-center">
+            <span class="text-lg font-bold text-gray-800">Total Price</span>
+            <span class="text-3xl font-bold text-indigo-600" id="total-price">$0.00</span>
+          </div>
+        </div>
+
+        <button
+          id="checkout-btn"
+          class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold text-lg hover:bg-indigo-700 hover:-translate-y-1 active:scale-95 transition-all shadow-xl shadow-indigo-100 flex items-center justify-center space-x-2"
+        >
+          <span>Check Out Now</span>
+          <i class="fa-solid fa-arrow-right-long text-sm"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function showMsg(msg) { alert(msg); }
+
+  // 通用 JSON 请求函数
+  async function requestJSON(url, options = {}) {
+    let res;
+    try { res = await fetch(url, options); }
+    catch (e) { showMsg("Network Error"); return { ok: false }; }
+
+    let data = null;
+    const ct = res.headers.get("content-type") || "";
+    if (ct.includes("application/json")) {
+      try { data = await res.json(); } catch (_) {}
+    }
+
+    if (!res.ok || (data && data.success === false)) {
+      showMsg(data?.message || "Operation failed");
+      return { ok: false };
+    }
+    return { ok: true, data };
+  }
+
+  // 删除项目逻辑
+  function deleteItems(productIds) {
+    if (!confirm("Remove this item from cart?")) return;
+    requestJSON('/cart/delete', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        product_ids: productIds.map(id => parseInt(id, 10))
+      })
+    }).then(r => { if (r.ok) location.reload(); });
+  }
+
+  // 只用 /cart/set 来设置数量
+  async function setQty(productId, qty) {
+    const n = parseInt(qty, 10);
+
+    if (!Number.isFinite(n)) {
+      showMsg("Invalid quantity");
+      return;
+    }
+
+    // <=0 当删除；如果你不想删，改成：if (n < 1) { showMsg("Quantity must be >= 1"); return; }
+    if (n <= 0) {
+      deleteItems([productId]);
+      return;
+    }
+
+    const r = await requestJSON('/cart/set', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        product_id: parseInt(productId, 10),
+        quantity: n
+      })
+    });
+
+    if (r.ok) location.reload();
+  }
+
+  function getQtyInput(productId) {
+    return document.querySelector(`.qty-input[data-id="${productId}"]`);
+  }
+
+  // + / - 按钮
+  document.querySelectorAll('.qty-change-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      const productId = this.dataset.id;
+      const delta = parseInt(this.dataset.delta, 10);
+
+      const input = getQtyInput(productId);
+      if (!input || input.disabled) return;
+
+      const current = parseInt(input.value || "0", 10);
+      const next = current + delta;
+
+      // 先更新 UI，再 set
+      input.value = String(Math.max(0, next));
+      setQty(productId, input.value);
+    });
+  });
+
+  // 输入框：change/blur 时 set；input 时限制为数字 & 实时刷新总价
+  document.querySelectorAll('.qty-input').forEach(input => {
+    input.addEventListener('input', function () {
+      // 只允许整数
+      this.value = this.value.replace(/[^\d]/g, '');
+      calculateTotal();
+    });
+
+    input.addEventListener('change', function () {
+      if (this.disabled) return;
+      const productId = this.dataset.id;
+      setQty(productId, this.value);
+    });
+
+    input.addEventListener('blur', function () {
+      if (this.disabled) return;
+      const productId = this.dataset.id;
+      setQty(productId, this.value);
+    });
+  });
+
+  // 实时计算总价（从 input 读数量）
+  function calculateTotal() {
+    let total = 0;
+    let count = 0;
+
+    document.querySelectorAll('.item-checkbox:checked:not(:disabled)').forEach(cb => {
+      const row = cb.closest('.group');
+      const qtyInput = row.querySelector('.qty-input');
+      const qty = parseInt(qtyInput?.value || "0", 10);
+      const price = parseFloat(cb.dataset.price);
+
+      if (Number.isFinite(qty) && qty > 0) {
+        total += qty * price;
+        count++;
+      }
+    });
+
+    document.getElementById('total-price').innerText = '$' + total.toFixed(2);
+    document.getElementById('selected-count').innerText = count;
+  }
+
+  // 结算跳转（从 input 取数量）
+  async function handleCheckout() {
+    const selectedBoxes = document.querySelectorAll('.item-checkbox:checked:not(:disabled)');
+    if (selectedBoxes.length === 0) {
+      showMsg("Please select available items");
+      return;
+    }
+
+    const items = Array.from(selectedBoxes).map(cb => {
+      const row = cb.closest('.group');
+      const qty = parseInt(row.querySelector('.qty-input')?.value || "0", 10);
+      return {
+        product_id: parseInt(cb.dataset.id, 10),
+        quantity: qty
+      };
+    }).filter(it => Number.isFinite(it.quantity) && it.quantity > 0);
+
+    if (items.length === 0) {
+      showMsg("Invalid quantity");
+      return;
+    }
+
+    const r = await requestJSON("/order", {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items })
+    });
+
+    if (r.ok) { window.location.href = "/order"; }
+  }
+
+  // 绑定事件监听
+  document.getElementById('checkout-btn')?.addEventListener('click', handleCheckout);
+
+  document.querySelectorAll('.item-checkbox').forEach(cb => {
+    cb.addEventListener('change', calculateTotal);
+  });
+
+  // 页面加载时执行一次计算
+  calculateTotal();
+</script>
+
+{{ template "footer" . }}
 {{ end }}

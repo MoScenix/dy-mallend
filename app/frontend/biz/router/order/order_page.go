@@ -17,10 +17,10 @@ import (
 func Register(r *server.Hertz) {
 
 	root := r.Group("/", rootMw()...)
-	root.POST("/order", append(_orderauthchangeMw(), order.OrderAuthChange)...)
-	_order := root.Group("/order", _orderMw()...)
-	_order.POST("/product", append(_orderproductputMw(), order.OrderProductPut)...)
-	_product := _order.Group("/product", _productMw()...)
+	root.POST("/center", append(_orderauthchangeMw(), order.OrderAuthChange)...)
+	_center := root.Group("/center", _centerMw()...)
+	_center.POST("/product", append(_orderproductputMw(), order.OrderProductPut)...)
+	_product := _center.Group("/product", _productMw()...)
 	_product.POST("/delete", append(_orderprodectdeleteMw(), order.OrderProdectDelete)...)
-	root.GET("/order", append(_orderauthMw(), order.OrderAuth)...)
+	root.GET("/center", append(_orderauthMw(), order.OrderAuth)...)
 }

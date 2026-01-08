@@ -68,27 +68,43 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+  cart:
+    # image: app-product:dev
+    build:
+      context: .
+      dockerfile: docker_files/DockerFile.cart
+    ports:
+      - "8084:8080"
+    environment:
+      - GO_ENV=online
+    depends_on:
+      consul:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
-  # frontend:
-  #   # image: app-frontend:dev
-  #   build:
-  #     context: .
-  #     dockerfile: docker_files/DockerFile.frontend
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     - GO_ENV=online
-  #   depends_on:
-  #     consul:
-  #       condition: service_healthy
-  #     mysql:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
-  #     user:
-  #       condition: service_started
-  #     product:
-  #       condition: service_started
+  frontend:
+    # image: app-frontend:dev
+    build:
+      context: .
+      dockerfile: docker_files/DockerFile.frontend
+    ports:
+      - "8080:8080"
+    environment:
+      - GO_ENV=online
+    depends_on:
+      consul:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      user:
+        condition: service_started
+      product:
+        condition: service_started
 
 volumes:
   mysql_data:

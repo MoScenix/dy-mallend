@@ -1,123 +1,38 @@
 {{ define "search" }}
-    {{ template "header" . }}
-    <style>
-    body {
-        background-color: #fcfdfe;
-    }
+{{ template "header" . }}
 
-    /* 1. 缩小卡片：调整边框和圆角 */
-    .product-card {
-        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
-        border-radius: 12px;
-        /* 圆角调小一点更精致 */
-        overflow: hidden;
-        background: #ffffff;
-        border: 1px solid #f1f4f8 !important;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .product-card:hover {
-        transform: translateY(-5px);
-        /* 上浮高度减半 */
-        border-color: var(--soft-blue) !important;
-        box-shadow: 0 10px 20px rgba(149, 157, 165, 0.08) !important;
-    }
-
-    /* 2. 缩小图片区域：去掉外边距，改用内边距 */
-    .product-img-container {
-        aspect-ratio: 1 / 1;
-        overflow: hidden;
-        background-color: #f8fafc;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-bottom: 1px solid #f8fafc;
-    }
-
-    .product-img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        transition: transform 0.5s ease;
-        padding: 15px;
-        /* 通过增加 padding 让图片视觉上变小 */
-    }
-
-    /* 3. 缩小文字区域：减小内边距和字号 */
-    .product-info {
-        padding: 0.75rem 1rem;
-    }
-
-    .product-name {
-        font-weight: 500;
-        color: #4a5568;
-        font-size: 0.9rem;
-        /* 减小字号 */
-        margin-bottom: 0.4rem;
-        display: -webkit-box;
-        -webkit-line-clamp: 1;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    .product-price {
-        font-weight: 700;
-        color: #2d3748;
-        font-size: 1rem;
-        /* 减小价格字号 */
-    }
-
-    /* 4. 缩小按钮 */
-    .add-btn {
-        width: 30px;
-        height: 30px;
-        background-color: var(--light-blue);
-        color: var(--accent-color);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.2s;
-        font-size: 0.8rem;
-    }
-
-    .product-card:hover .add-btn {
-        background-color: var(--accent-color);
-        color: white;
-    }
-
-    .product-link {
-        text-decoration: none !important;
-        color: inherit !important;
-    }
-</style>
-
-<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-xxl-6 g-3 mt-2">
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4 mt-6">
     {{ range $.products }}
-    <div class="col">
-        <a href="/product?id={{ .Id }}" class="product-link">
-            <div class="card product-card border-0">
-                <div class="product-img-container">
-                    <img src="{{ .Picture }}" class="product-img" alt="{{ .Name }}">
+    <div class="group">
+        <a href="/product?id={{ .Id }}" class="block no-underline">
+            <div class="bg-white border border-gray-100 rounded-xl overflow-hidden h-full flex flex-col transition-all duration-300 ease-[cubic-bezier(0.165,0.84,0.44,1)] group-hover:-translate-y-1.5 group-hover:border-soft-blue group-hover:shadow-lg">
+                
+                <div class="aspect-square bg-gray-50 flex items-center justify-center border-b border-gray-50 overflow-hidden">
+                    <img src="{{ .Picture }}" 
+                         class="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105" 
+                         alt="{{ .Name }}">
                 </div>
 
-                <div class="product-info">
-                    <div class="product-name">
+                <div class="p-4 flex-grow">
+                    <h3 class="font-medium text-gray-600 text-sm mb-1.5 truncate">
                         {{ .Name }}
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <span class="product-price">${{ .Price }}</span>
-                        <div class="add-btn">
-                            <i class="fa-solid fa-plus"></i>
+                    </h3>
+                    
+                    <div class="flex justify-between items-center">
+                        <span class="font-bold text-gray-800 text-base">
+                            ${{ .Price }}
+                        </span>
+                        
+                        <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-light-blue text-accent-color transition-colors duration-200 group-hover:bg-accent-color group-hover:text-white">
+                            <i class="fa-solid fa-plus text-xs"></i>
                         </div>
                     </div>
                 </div>
             </div>
         </a>
     </div>
-    {{ end}}
+    {{ end }}
 </div>
-    {{ template "footer" . }}
+
+{{ template "footer" . }}
 {{ end }}

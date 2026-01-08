@@ -1,0 +1,368 @@
+{{ define `center` }}
+{{ template `header` . }}
+<!-- Top Notice -->
+<div id="topNotice"
+     class="fixed top-4 left-1/2 z-[2000] hidden -translate-x-1/2 rounded-full px-4 py-2 text-xs font-semibold text-white shadow-lg">
+  <span id="topNoticeText">OK</span>
+</div>
+
+<div class="mx-auto max-w-[1000px] px-6 py-12 font-sans">
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+    <div class="lg:col-span-4">
+      <div class="sticky top-8 rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-[0_10px_25px_rgba(0,0,0,0.03)]">
+        <form id="profileForm">
+          <div class="group relative mx-auto mb-5 h-[90px] w-[90px] cursor-pointer overflow-hidden rounded-full border-2 border-white bg-slate-50 shadow-md"
+               onclick="document.getElementById('avatarInput').click()">
+            <input type="file" id="avatarInput" name="avatar" class="hidden" onchange="autoSaveProfile()">
+            {{ if .avatar }}
+              <img src="{{ .avatar }}" class="h-full w-full object-cover" id="avatarPreview">
+            {{ else }}
+              <div class="flex h-full w-full items-center justify-center text-slate-400">
+                <i class="fa-regular fa-user text-2xl"></i>
+              </div>
+            {{ end }}
+            <div class="absolute inset-0 flex items-center justify-center bg-black/30 text-white opacity-0 transition group-hover:opacity-100">
+              <i class="fa-solid fa-camera text-lg"></i>
+            </div>
+          </div>
+
+          <div class="mb-3 flex items-center justify-center">
+            <span class="cursor-pointer border-b border-transparent text-xl font-bold text-slate-800 hover:border-slate-200"
+                  id="nameLabel" onclick="enterEdit('name')">{{ .user_name }}</span>
+
+            <input type="text" name="user_name" id="nameInput"
+                   class="hidden w-full max-w-[240px] rounded-md border border-indigo-500 bg-slate-50 px-3 py-1.5 text-center text-xl font-bold text-slate-800 outline-none"
+                   value="{{ .user_name }}" onblur="exitEdit('name')">
+
+            <i class="fa-solid fa-pencil ml-2 cursor-pointer text-xs text-slate-300 transition hover:text-indigo-600"
+               onclick="enterEdit('name')"></i>
+          </div>
+
+          <div class="flex items-center justify-center">
+            <span class="max-w-[220px] cursor-pointer text-sm leading-snug text-slate-500"
+                  id="descLabel" onclick="enterEdit('desc')">{{ or .description `Add a short bio...` }}</span>
+
+            <textarea name="description" id="descInput" rows="3"
+                      class="hidden w-full max-w-[260px] rounded-md border border-indigo-500 bg-slate-50 px-3 py-2 text-center text-sm text-slate-700 outline-none"
+                      onblur="exitEdit('desc')">{{ .description }}</textarea>
+
+            <i class="fa-solid fa-pencil ml-2 cursor-pointer text-xs text-slate-300 transition hover:text-indigo-600"
+               onclick="enterEdit('desc')"></i>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="lg:col-span-8">
+      <div class="rounded-3xl border border-slate-200 bg-white p-8">
+        <div class="mb-8 flex items-center justify-between">
+          <h5 class="text-base font-bold text-slate-800">My Collection</h5>
+          <button id="openAddModalBtn"
+                  class="rounded-full bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
+            Add New
+          </button>
+        </div>
+
+        <div id="productList">
+          {{ range .orders }}{{ range .Items }}
+          <div class="mb-2 flex items-center rounded-2xl border border-transparent p-4 transition hover:border-slate-200 hover:bg-slate-50"
+               id="product-{{ .Id }}">
+            <img src="{{ .Picture }}" class="h-[60px] w-[60px] rounded-xl border border-slate-200 bg-white object-cover">
+            <div class="flex-1 pl-5">
+              <div class="text-[0.95rem] font-semibold text-slate-800">{{ .ProductName }}</div>
+              <div class="text-sm font-bold text-indigo-600">${{ .Cost }}</div>
+            </div>
+            <button onclick="deleteProduct('{{ .Id }}')"
+                    class="rounded-lg p-2 text-rose-300 transition hover:bg-rose-100 hover:text-rose-500">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+          {{ end }}{{ end }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="addModal" class="fixed inset-0 z-50 hidden">
+  <div id="addModalBackdrop" class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+  <div class="relative flex min-h-screen items-center justify-center px-4 py-8">
+    <div class="w-full max-w-[820px] rounded-3xl bg-white shadow-2xl overflow-hidden">
+      <form id="addProductForm" class="p-8 md:p-10">
+        <div class="mb-8 flex items-center justify-between">
+          <h5 class="text-xl font-bold text-slate-800">Add New Product</h5>
+          <button type="button" id="closeAddModalBtn" class="inline-flex h-10 w-10 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors">
+            <i class="fa-solid fa-xmark text-xl"></i>
+          </button>
+        </div>
+
+        <div class="grid grid-cols-1 gap-10 md:grid-cols-12">
+          <div class="md:col-span-7 space-y-4">
+            <div>
+              <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 ml-1">Product Details</label>
+              <input type="text" name="name" id="inputName" required placeholder="What are you selling?"
+                     class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 transition-all">
+            </div>
+
+            <div class="relative">
+              <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">$</span>
+              <input type="number" step="0.01" name="price" id="inputPrice" required placeholder="0.00"
+                     class="w-full rounded-xl border border-slate-200 pl-8 pr-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 transition-all">
+            </div>
+
+            <textarea name="description" rows="3" placeholder="Tell us more about it..."
+                      class="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50/50 transition-all"></textarea>
+
+            <input type="file" id="pictureInput" name="picture" accept="image/*" required class="hidden">
+            
+            <button type="submit"
+                    class="w-full mt-4 rounded-xl bg-indigo-600 py-4 text-sm font-bold text-white shadow-lg shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-0.5 transition-all active:scale-[0.98]">
+              Confirm & Upload
+            </button>
+          </div>
+
+          <div class="md:col-span-5">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 ml-1">Live Preview</label>
+            
+            <div class="group cursor-pointer" onclick="document.getElementById('pictureInput').click()">
+              <div class="bg-white border-2 border-dashed border-slate-200 rounded-2xl overflow-hidden h-full flex flex-col transition-all duration-300 group-hover:border-indigo-400 group-hover:shadow-xl relative">
+                
+                <div class="aspect-square bg-slate-50 flex items-center justify-center overflow-hidden relative">
+                  <img id="picturePreview" class="hidden w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105">
+                  
+                  <div id="previewPlaceholder" class="flex flex-col items-center justify-center text-slate-400 transition-opacity group-hover:text-indigo-500">
+                    <i class="fa-solid fa-cloud-arrow-up text-3xl mb-2"></i>
+                    <div class="text-[10px] font-bold uppercase tracking-widest">Click to Upload</div>
+                  </div>
+
+                  <div class="absolute inset-0 bg-indigo-600/5 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span class="bg-white px-3 py-1.5 rounded-full text-[10px] font-bold text-indigo-600 shadow-sm">CHANGE IMAGE</span>
+                  </div>
+                </div>
+
+                <div class="p-4 flex-grow border-t border-slate-50">
+                  <h3 id="previewName" class="font-medium text-slate-400 text-sm mb-1.5 truncate italic">
+                    Product Name
+                  </h3>
+                  <div class="flex justify-between items-center">
+                    <span id="previewPrice" class="font-bold text-slate-800 text-base">
+                      $0.00
+                    </span>
+                    <div class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
+                      <i class="fa-solid fa-plus text-xs"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p class="mt-4 text-center text-[11px] text-slate-400">Preview as it will appear on the store front</p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+</div>
+
+<div id="saveToast"
+     class="fixed bottom-5 left-1/2 z-[1000] -translate-x-1/2 rounded-full bg-slate-800 px-5 py-2 text-xs text-white opacity-0 transition pointer-events-none">
+  Changes Saved
+</div>
+
+<script>
+function showTopNotice(text, type = "success") {
+  const box = document.getElementById("topNotice");
+  const txt = document.getElementById("topNoticeText");
+  if (!box || !txt) return;
+
+  txt.innerText = text || (type === "success" ? "操作成功" : "操作失败");
+
+  box.classList.remove("bg-emerald-600", "bg-rose-600", "bg-slate-800");
+  if (type === "success") box.classList.add("bg-emerald-600");
+  else if (type === "error") box.classList.add("bg-rose-600");
+  else box.classList.add("bg-slate-800");
+
+  box.classList.remove("hidden");
+  box.classList.add("opacity-100");
+
+  clearTimeout(showTopNotice._timer);
+  showTopNotice._timer = setTimeout(() => {
+    box.classList.add("hidden");
+  }, 1600);
+}
+
+async function noticeAndReload(text = "操作成功") {
+  showTopNotice(text, "success");
+  await new Promise(r => setTimeout(r, 500));
+  location.reload();
+}
+
+function showMsg(msg) {
+  showTopNotice(msg || "操作失败", "error");
+}
+
+async function requestJSON(url, options = {}) {
+  let res;
+  try {
+    res = await fetch(url, options);
+  } catch (e) {
+    showMsg("网络错误");
+    return { ok: false, data: null };
+  }
+
+  let data = null;
+  const ct = res.headers.get("content-type") || "";
+
+  if (ct.includes("application/json")) {
+    try { data = await res.json(); } catch (_) {}
+  } else {
+    try { data = await res.text(); } catch (_) {}
+  }
+
+  if (!res.ok) {
+    const msg =
+      (data && (data.message || data.msg || data.error)) ||
+      (typeof data === "string" ? data : "") ||
+      ("请求失败");
+    showMsg(msg);
+    return { ok: false, data };
+  }
+  if (!data || data.success !== true) {
+    const msg =
+      (data && (data.message || data.msg || data.error)) ||
+      "操作失败";
+    showMsg(msg);
+    return { ok: false, data };
+  }
+
+  return { ok: true, data };
+}
+
+function enterEdit(id) {
+  const label = document.getElementById(id + "Label");
+  const input = document.getElementById(id + "Input");
+  if (!label || !input) return;
+
+  label.classList.add("hidden");
+  input.classList.remove("hidden");
+  input.focus();
+
+  const len = input.value.length;
+  if (input.setSelectionRange) input.setSelectionRange(len, len);
+}
+
+async function exitEdit(id) {
+  const label = document.getElementById(id + "Label");
+  const input = document.getElementById(id + "Input");
+  if (!label || !input) return;
+
+  const newValue = input.value.trim();
+  const oldValue = label.innerText.trim();
+
+  label.innerText = newValue || (id === "name" ? "Your Name" : "Add a short bio...");
+  label.classList.remove("hidden");
+  input.classList.add("hidden");
+
+  if (newValue !== oldValue) await autoSaveProfile();
+}
+
+async function autoSaveProfile() {
+  const form = document.getElementById("profileForm");
+  if (!form) return;
+
+  const formData = new FormData(form);
+  const r = await requestJSON("/center", { method: "POST", body: formData });
+  if (r.ok) await noticeAndReload("资料已保存");
+}
+
+async function deleteProduct(id) {
+  if (!confirm("确定要删除吗？")) return;
+  const r = await requestJSON("/center/product/delete?id=" + encodeURIComponent(id), { method: "POST" });
+  if (r.ok) await noticeAndReload("删除成功");
+}
+
+const inputName = document.getElementById("inputName");
+const inputPrice = document.getElementById("inputPrice");
+const previewName = document.getElementById("previewName");
+const previewPrice = document.getElementById("previewPrice");
+
+if (inputName && previewName) {
+  inputName.addEventListener("input", e => {
+    const val = e.target.value.trim();
+    previewName.innerText = val || "Product Name";
+    previewName.classList.toggle("text-slate-400", !val);
+    previewName.classList.toggle("text-slate-800", !!val);
+    previewName.classList.toggle("italic", !val);
+  });
+}
+
+if (inputPrice && previewPrice) {
+  inputPrice.addEventListener("input", e => {
+    const val = parseFloat(e.target.value);
+    previewPrice.innerText = isNaN(val)
+      ? "$0.00"
+      : "$" + val.toLocaleString(undefined, { minimumFractionDigits: 2 });
+  });
+}
+
+const pictureInput = document.getElementById("pictureInput");
+const picturePreview = document.getElementById("picturePreview");
+const previewPlaceholder = document.getElementById("previewPlaceholder");
+
+if (pictureInput) {
+  pictureInput.addEventListener("change", e => {
+    const file = e.target.files && e.target.files[0];
+    if (!file || !file.type.startsWith("image/")) {
+      showMsg("请选择图片文件");
+      e.target.value = "";
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    if (picturePreview) {
+      picturePreview.src = url;
+      picturePreview.classList.remove("hidden");
+    }
+    if (previewPlaceholder) previewPlaceholder.classList.add("hidden");
+  });
+}
+
+const addProductForm = document.getElementById("addProductForm");
+if (addProductForm) {
+  addProductForm.onsubmit = async e => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const r = await requestJSON("/center/product", { method: "POST", body: formData });
+    if (r.ok) await noticeAndReload("发布成功");
+  };
+}
+
+const addModal = document.getElementById("addModal");
+const openAddModalBtn = document.getElementById("openAddModalBtn");
+const closeAddModalBtn = document.getElementById("closeAddModalBtn");
+const addModalBackdrop = document.getElementById("addModalBackdrop");
+
+function openAddModal() {
+  if (!addModal) return;
+  addModal.classList.remove("hidden");
+  document.body.style.overflow = "hidden";
+}
+
+function closeAddModal() {
+  if (!addModal) return;
+  addModal.classList.add("hidden");
+  document.body.style.overflow = "";
+}
+
+if (openAddModalBtn) openAddModalBtn.addEventListener("click", openAddModal);
+if (closeAddModalBtn) closeAddModalBtn.addEventListener("click", closeAddModal);
+if (addModalBackdrop) addModalBackdrop.addEventListener("click", closeAddModal);
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && addModal && !addModal.classList.contains("hidden")) {
+    closeAddModal();
+  }
+});
+</script>
+
+{{ template "footer" . }}
+{{ end }}

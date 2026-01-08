@@ -50,3 +50,10 @@ func (s *ProductCatalogServiceImpl) GetProDucts(ctx context.Context, req *produc
 
 	return resp, err
 }
+
+// GetProductsById implements the ProductCatalogServiceImpl interface.
+func (s *ProductCatalogServiceImpl) GetProductsById(ctx context.Context, req *product.GetProductsByIdReq) (resp *product.GetProductsByIdResp, err error) {
+	resp, err = service.NewGetProductsByIdService(ctx).Run(req)
+
+	return resp, err
+}

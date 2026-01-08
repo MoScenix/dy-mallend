@@ -1,0 +1,15 @@
+@import "tailwindcss";
+
+@source "../template/**/*.{html,js,ts,jsx,tsx,vue}";
+
+@layer utilities {
+  .qty-input::-webkit-outer-spin-button,
+  .qty-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .qty-input[type='number'] {
+    -moz-appearance: textfield;
+  }
+}

@@ -57,6 +57,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingUnary),
 	),
+	"GetProductsById": kitex.NewMethodInfo(
+		getProductsByIdHandler,
+		newGetProductsByIdArgs,
+		newGetProductsByIdResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingUnary),
+	),
 }
 
 var (
@@ -1041,6 +1048,159 @@ func (p *GetProDuctsResult) GetResult() interface{} {
 	return p.Success
 }
 
+func getProductsByIdHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	switch s := arg.(type) {
+	case *streaming.Args:
+		st := s.Stream
+		req := new(product.GetProductsByIdReq)
+		if err := st.RecvMsg(req); err != nil {
+			return err
+		}
+		resp, err := handler.(product.ProductCatalogService).GetProductsById(ctx, req)
+		if err != nil {
+			return err
+		}
+		return st.SendMsg(resp)
+	case *GetProductsByIdArgs:
+		success, err := handler.(product.ProductCatalogService).GetProductsById(ctx, s.Req)
+		if err != nil {
+			return err
+		}
+		realResult := result.(*GetProductsByIdResult)
+		realResult.Success = success
+		return nil
+	default:
+		return errInvalidMessageType
+	}
+}
+func newGetProductsByIdArgs() interface{} {
+	return &GetProductsByIdArgs{}
+}
+
+func newGetProductsByIdResult() interface{} {
+	return &GetProductsByIdResult{}
+}
+
+type GetProductsByIdArgs struct {
+	Req *product.GetProductsByIdReq
+}
+
+func (p *GetProductsByIdArgs) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetReq() {
+		p.Req = new(product.GetProductsByIdReq)
+	}
+	return p.Req.FastRead(buf, _type, number)
+}
+
+func (p *GetProductsByIdArgs) FastWrite(buf []byte) (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.FastWrite(buf)
+}
+
+func (p *GetProductsByIdArgs) Size() (n int) {
+	if !p.IsSetReq() {
+		return 0
+	}
+	return p.Req.Size()
+}
+
+func (p *GetProductsByIdArgs) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetReq() {
+		return out, nil
+	}
+	return proto.Marshal(p.Req)
+}
+
+func (p *GetProductsByIdArgs) Unmarshal(in []byte) error {
+	msg := new(product.GetProductsByIdReq)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Req = msg
+	return nil
+}
+
+var GetProductsByIdArgs_Req_DEFAULT *product.GetProductsByIdReq
+
+func (p *GetProductsByIdArgs) GetReq() *product.GetProductsByIdReq {
+	if !p.IsSetReq() {
+		return GetProductsByIdArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+
+func (p *GetProductsByIdArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *GetProductsByIdArgs) GetFirstArgument() interface{} {
+	return p.Req
+}
+
+type GetProductsByIdResult struct {
+	Success *product.GetProductsByIdResp
+}
+
+var GetProductsByIdResult_Success_DEFAULT *product.GetProductsByIdResp
+
+func (p *GetProductsByIdResult) FastRead(buf []byte, _type int8, number int32) (n int, err error) {
+	if !p.IsSetSuccess() {
+		p.Success = new(product.GetProductsByIdResp)
+	}
+	return p.Success.FastRead(buf, _type, number)
+}
+
+func (p *GetProductsByIdResult) FastWrite(buf []byte) (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.FastWrite(buf)
+}
+
+func (p *GetProductsByIdResult) Size() (n int) {
+	if !p.IsSetSuccess() {
+		return 0
+	}
+	return p.Success.Size()
+}
+
+func (p *GetProductsByIdResult) Marshal(out []byte) ([]byte, error) {
+	if !p.IsSetSuccess() {
+		return out, nil
+	}
+	return proto.Marshal(p.Success)
+}
+
+func (p *GetProductsByIdResult) Unmarshal(in []byte) error {
+	msg := new(product.GetProductsByIdResp)
+	if err := proto.Unmarshal(in, msg); err != nil {
+		return err
+	}
+	p.Success = msg
+	return nil
+}
+
+func (p *GetProductsByIdResult) GetSuccess() *product.GetProductsByIdResp {
+	if !p.IsSetSuccess() {
+		return GetProductsByIdResult_Success_DEFAULT
+	}
+	return p.Success
+}
+
+func (p *GetProductsByIdResult) SetSuccess(x interface{}) {
+	p.Success = x.(*product.GetProductsByIdResp)
+}
+
+func (p *GetProductsByIdResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *GetProductsByIdResult) GetResult() interface{} {
+	return p.Success
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -1106,6 +1266,16 @@ func (p *kClient) GetProDucts(ctx context.Context, Req *product.GetProDuctsReq) 
 	_args.Req = Req
 	var _result GetProDuctsResult
 	if err = p.c.Call(ctx, "GetProDucts", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetProductsById(ctx context.Context, Req *product.GetProductsByIdReq) (r *product.GetProductsByIdResp, err error) {
+	var _args GetProductsByIdArgs
+	_args.Req = Req
+	var _result GetProductsByIdResult
+	if err = p.c.Call(ctx, "GetProductsById", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

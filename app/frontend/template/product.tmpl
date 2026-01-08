@@ -1,200 +1,104 @@
 {{ define "product" }}
 {{ template "header" . }}
 
-<style>
-    /* ... 保留之前的 product-detail-container 等样式 ... */
-    .product-detail-container {
-        max-width: 1200px;
-        margin: 1.5rem auto;
-        background: #fff;
-        border-radius: 20px;
-        padding: 2rem;
-        border: 1px solid #f1f4f8;
-    }
-
-    .product-image-box {
-        border-radius: 15px;
-        overflow: hidden;
-        background-color: #f8fafc;
-        border: 1px solid #edf2f7;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .product-image-box img {
-        max-width: 100%;
-        height: auto;
-        aspect-ratio: 1 / 1;
-        object-fit: contain;
-        padding: 2rem;
-    }
-
-    .product-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: #2d3748;
-        margin-bottom: 0.8rem;
-    }
-
-    .product-price-tag {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: var(--accent-color);
-        margin-bottom: 1.5rem;
-        display: block;
-    }
-
-    /* --- 新增：评论区样式 --- */
-    .comment-section {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-    }
-
-    .comment-card {
-        background: #fff;
-        border-radius: 16px;
-        padding: 1.5rem;
-        border: 1px solid #f1f4f8;
-        margin-bottom: 1rem;
-    }
-
-    .user-avatar {
-        width: 48px;
-        height: 48px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 2px solid #edf2f7;
-    }
-
-    .comment-content {
-        margin-left: 1rem;
-        flex: 1;
-    }
-
-    .comment-user-id {
-        font-weight: 700;
-        color: #2d3748;
-        font-size: 0.95rem;
-    }
-
-    .comment-time {
-        font-size: 0.8rem;
-        color: #a0aec0;
-    }
-
-    .comment-text {
-        color: #4a5568;
-        margin-top: 0.5rem;
-        line-height: 1.5;
-    }
-
-    .comment-imgs img {
-        width: 80px;
-        height: 80px;
-        border-radius: 8px;
-        object-fit: cover;
-        margin-top: 10px;
-        margin-right: 8px;
-        border: 1px solid #edf2f7;
-    }
-
-    /* 评论表单 */
-    .comment-form {
-        background: #f8fafc;
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 2rem;
-    }
-
-    .comment-form textarea {
-        border-radius: 10px;
-        border: 1px solid #edf2f7;
-        resize: none;
-    }
-
-    .btn-submit-comment {
-        background-color: var(--accent-color);
-        color: white;
-        border-radius: 8px;
-        padding: 0.5rem 1.5rem;
-        font-weight: 600;
-        border: none;
-    }
-</style>
-
-<div class="product-detail-container">
-    <div class="row g-4 align-items-center">
-        <div class="col-lg-6">
-            <div class="product-image-box">
-                <img src="{{ .item.Picture }}" alt="{{ .item.Name }}">
-            </div>
+<div class="max-w-6xl mx-auto my-6 bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 flex justify-center items-center aspect-square">
+            <img src="{{ .item.Picture }}" alt="{{ .item.Name }}" class="max-w-full h-auto p-8 object-contain">
         </div>
-        <div class="col-lg-6">
-            <form action="/cart" method="post" class="ps-lg-4">
-                <h1 class="product-title">{{ .item.Name }}</h1>
-                <span class="product-price-tag">${{ .item.Price }}</span>
-                <p class="product-description">{{ .item.Description }}</p>
-                <input type="hidden" value="{{ .item.Id }}" name="productId">
-                <div class="mb-4">
-                    <label class="form-label small fw-bold text-muted text-uppercase">Quantity</label>
-                    <input type="number" class="form-control" style="width: 100px;" name="productNum" value="1" min="1">
+
+        <div class="lg:pl-6">
+            <div class="space-y-6">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">{{ .item.Name }}</h1>
+                    <span class="text-2xl font-bold text-accent-color block">
+                        ${{ .item.Price }}
+                    </span>
                 </div>
-                <button type="submit" class="btn btn-add-cart"><i class="fa-solid fa-cart-plus me-2"></i>Add to
-                    Cart</button>
-            </form>
+
+                <p class="text-gray-600 leading-relaxed">
+                    {{ .item.Description }}
+                </p>
+
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-wider">Quantity</label>
+                    <div class="flex items-center space-x-1">
+                        <div class="flex items-center bg-gray-100 rounded-xl p-1 border border-gray-200">
+                            <button onclick="stepQty(-1)" 
+                                    class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white hover:shadow-sm rounded-lg transition-all active:scale-90">
+                                <i class="fa-solid fa-minus text-xs"></i>
+                            </button>
+                            
+                            <input type="number" id="productNum" readonly
+                                   class="w-14 text-center bg-transparent border-none focus:ring-0 font-bold text-gray-700" 
+                                   value="1" min="1">
+                            
+                            <button onclick="stepQty(1)" 
+                                    class="w-10 h-10 flex items-center justify-center text-gray-500 hover:bg-white hover:shadow-sm rounded-lg transition-all active:scale-90">
+                                <i class="fa-solid fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" onclick="addToCart('{{ .item.Id }}')" id="addToCartBtn"
+                        class="w-full sm:w-auto flex items-center justify-center bg-accent-color hover:bg-blue-500 text-white px-12 py-4 rounded-xl font-bold transition-all shadow-lg shadow-blue-100 active:scale-95">
+                    <i class="fa-solid fa-cart-plus mr-2"></i>
+                    <span id="btnText">Add to Cart</span>
+                </button>
+            </div>
         </div>
     </div>
 </div>
 
-<div class="comment-section">
-    <h3 class="mb-4" style="font-weight: 700; color: #2d3748;">Reviews</h3>
+<script>
+function stepQty(delta) {
+    const input = document.getElementById('productNum');
+    let val = parseInt(input.value) + delta;
+    if (val < 1) val = 1;
+    input.value = val;
+}
 
-    <div class="comment-form">
-        <form action="/commit/{{ .item.Id }}" method="post" enctype="multipart/form-data">
-            <div class="mb-3">
-                <label class="form-label small fw-bold text-muted">LEAVE A COMMENT</label>
-                <textarea class="form-control" name="context" rows="3"
-                    placeholder="Share your thoughts about this product..." required></textarea>
-            </div>
-            <div class="mb-3">
-                <label class="form-label small fw-bold text-muted">UPLOAD IMAGES</label>
-                <input type="file" class="form-control form-control-sm" name="imgs" multiple accept="image/*">
-            </div>
-            <button type="submit" class="btn btn-submit-comment">Post Comment</button>
-        </form>
-    </div>
+async function addToCart(productId) {
+    const btn = document.getElementById('addToCartBtn');
+    const btnText = document.getElementById('btnText');
+    const quantity = document.getElementById('productNum').value;
 
-    <div class="comment-list">
-        {{ range .comments }}
-        <div class="comment-card d-flex">
-            <img src="/static/{{ .user_id }}.jpg" class="user-avatar" alt="User Avatar"
-                onerror="this.src='/static/default-avatar.jpg'">
+    btn.disabled = true;
+    btn.classList.add('opacity-50', 'cursor-not-allowed');
+    btnText.innerText = 'Redirecting...';
 
-            <div class="comment-content">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span class="comment-user-id">User #{{ .user_id }}</span>
-                    <span class="comment-time">{{ .time }}</span>
-                </div>
-                <div class="comment-text">
-                    {{ .context }}
-                </div>
+    try {
+        const response = await fetch('/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                product_id: parseInt(productId),
+                quantity: parseInt(quantity)
+            })
+        });
 
-                {{ if .img }}
-                <div class="comment-imgs">
-                    {{ range .img }}
-                    <img src="{{ . }}" alt="Comment Image">
-                    {{ end }}
-                </div>
-                {{ end }}
-            </div>
-        </div>
-        {{ else }}
-        <p class="text-center text-muted">No comments yet. Be the first to review!</p>
-        {{ end }}
-    </div>
-</div>
+        const result = await response.json();
+
+        if (result.success) {
+            // 核心修改：成功后直接跳转到购物车页面
+            window.location.href = '/cart';
+        } else {
+            alert('Error: ' + (result.message || 'Could not add item'));
+            resetBtn();
+        }
+    } catch (error) {
+        alert('Network error');
+        resetBtn();
+    }
+
+    function resetBtn() {
+        btn.disabled = false;
+        btn.classList.remove('opacity-50', 'cursor-not-allowed');
+        btnText.innerText = 'Add to Cart';
+    }
+}
+</script>
 
 {{ template "footer" . }}
 {{ end }}

@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+package frontend.cart;
+
+option go_package = "frontend/cart";
+
+import "api.proto";
+import "frontend/common.proto";
+
+service CartService {
+  rpc AddItem(AddItemReq) returns (BoolResp) {
+    option (api.post) = "/cart/add";
+  }
+
+  rpc SetItem(SetItemReq) returns (BoolResp) {
+    option (api.post) = "/cart/set";
+  }
+
+  rpc RemoveItems(RemoveItemsReq) returns (BoolResp) {
+    option (api.post) = "/cart/delete";
+  }
+
+  rpc GetCart(GetCartReq) returns (GetCartResp) {
+    option (api.get) = "/cart";
+  }
+}
+
+message BoolResp {
+  bool success = 1 [json_name = "success"];
+}
+
+message CartItem {
+  uint64 product_id   = 1 [json_name = "product_id"];
+  uint32 quantity     = 2 [json_name = "quantity"];
+  string name         = 3 [json_name = "name"];
+  string description  = 4 [json_name = "description"];
+  string picture      = 5 [json_name = "picture"];
+  float price         = 6 [json_name = "price"];
+  bool isdeleted      = 7 [json_name = "isdeleted"];
+}
+
+message Cart {
+  uint64 user_id          = 1 [json_name = "user_id"];
+  repeated CartItem items = 2 [json_name = "items"];
+}
+
+message AddItemReq {
+  uint64 product_id = 2 [json_name = "product_id"];
+  uint32 quantity   = 3 [json_name = "quantity"];
+}
+
+message SetItemReq {
+  uint64 product_id = 2 [json_name = "product_id"];
+  uint32 quantity   = 3 [json_name = "quantity"];
+}
+
+message RemoveItemsReq {
+  repeated uint64 product_ids = 2 [json_name = "product_ids"];
+}
+
+message GetCartReq {
+}
+
+message GetCartResp {
+  bool success = 1 [json_name = "success"];
+  Cart cart    = 2 [json_name = "cart"];
+}

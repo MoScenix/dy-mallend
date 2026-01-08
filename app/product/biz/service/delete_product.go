@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/MoScenix/douyin-mall-backend/app/product/biz/dal/mysql"
+	"github.com/MoScenix/douyin-mall-backend/app/product/biz/dal/redis"
 	"github.com/MoScenix/douyin-mall-backend/app/product/biz/model"
 	product "github.com/MoScenix/douyin-mall-backend/rpc_gen/kitex_gen/product"
 	"github.com/cloudwego/kitex/pkg/kerrors"
@@ -19,7 +20,7 @@ func NewDeleteProductService(ctx context.Context) *DeleteProductService {
 // Run create note info
 func (s *DeleteProductService) Run(req *product.DeleteProductReq) (resp *product.DeleteProductResp, err error) {
 	// Finish your business logic.
-	var ProductQuery = model.NewProductQuery(s.ctx, mysql.DB)
+	var ProductQuery = model.NewProductProQuery(s.ctx, mysql.DB, redis.RedisClient)
 	DeleteProudct, err := ProductQuery.GetById(int(req.Id))
 	if err != nil {
 		return &product.DeleteProductResp{
@@ -32,7 +33,9 @@ func (s *DeleteProductService) Run(req *product.DeleteProductReq) (resp *product
 		}, kerrors.NewBizStatusError(2004001, "you are not the owner of this product")
 	}
 	err = ProductQuery.DeleteProduct(int(req.Id))
+	//fmt.Println(DeleteProudct.Picture)
 	return &product.DeleteProductResp{
 		Success: true,
+		Picture: DeleteProudct.Picture,
 	}, err
 }

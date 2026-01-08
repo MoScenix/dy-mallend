@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/MoScenix/douyin-mall-backend/app/product/biz/dal/mysql"
+	"github.com/MoScenix/douyin-mall-backend/app/product/biz/dal/redis"
 	"github.com/MoScenix/douyin-mall-backend/app/product/biz/model"
 	product "github.com/MoScenix/douyin-mall-backend/rpc_gen/kitex_gen/product"
 )
@@ -26,7 +27,7 @@ func (s *AddProductService) Run(req *product.AddProductReq) (resp *product.AddPr
 		Price:       req.Price,
 		UserID:      int(req.UserId),
 	}
-	err = model.NewProductQuery(s.ctx, mysql.DB).AddProduct(NewProduct)
+	err = model.NewProductProQuery(s.ctx, mysql.DB, redis.RedisClient).AddProduct(NewProduct)
 	return &product.AddProductResp{
 		Id: uint32(NewProduct.ID),
 	}, err

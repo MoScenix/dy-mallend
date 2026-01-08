@@ -1,0 +1,120 @@
+{{ define "about" }}
+{{ template "header" . }}
+
+<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="bg-white shadow-sm rounded-xl overflow-hidden border border-gray-100">
+      <div class="p-8 sm:p-10">
+
+        <h2 class="text-3xl font-bold text-gray-900 text-center mb-8">
+          About This Project
+        </h2>
+
+        <div class="space-y-6 text-gray-600 leading-relaxed">
+          <p>
+            This project is a <strong class="text-indigo-600 font-semibold">learning-oriented demo application</strong> built for studying
+            distributed systems, microservices, and backend architecture.
+          </p>
+
+          <p>
+            It is <strong class="text-gray-900">not a real e-commerce platform</strong> and does not involve any real
+            transactions, payments, or commercial activities.
+          </p>
+
+          <p>
+            The project is developed and maintained by <strong class="text-gray-900">MoScenix</strong>, and is intended for
+            educational, experimental, and technical exploration purposes only.
+          </p>
+
+          <div class="pt-4">
+            <h3 class="text-xl font-bold text-gray-900 mb-4 flex items-center">
+              <span class="w-1 h-6 bg-indigo-500 rounded-full mr-3"></span>
+              Technology Stack
+            </h3>
+
+            <div class="overflow-hidden border border-gray-200 rounded-lg">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider w-1/3">
+                      Technology
+                    </th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                      Introduction
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody class="bg-white divide-y divide-gray-200">
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">cwgo</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A CloudWeGo toolchain for generating microservice project scaffolding in Go.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">Consul</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A service registry and discovery tool used for service registration, health checking, and service discovery.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">Kitex</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A high-performance RPC framework by CloudWeGo for inter-service communication.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">Hertz</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A high-performance HTTP framework used as an API gateway or frontend service.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">Bootstrap</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A powerful, feature-packed frontend toolkit for building responsive web interfaces quickly.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">MySQL</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A relational database used for persistent data storage.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">Redis</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">An in-memory data store used for caching and performance optimization.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">Elasticsearch</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A distributed search engine for full-text search and fast query capabilities.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">Prometheus</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A monitoring system used to collect metrics and observe service health.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">Jaeger</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A distributed tracing system for analyzing request flows across microservices.</td>
+                  </tr>
+
+                  <tr class="hover:bg-gray-50 transition-colors">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">Docker</td>
+                    <td class="px-6 py-4 text-sm text-gray-600">A containerization platform for building and running services consistently.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <p class="text-sm text-gray-400 italic pt-4 border-t border-gray-100">
+            The project focuses on understanding service communication, infrastructure components,
+            and observability practices in modern backend systems.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+{{ template "footer" . }}
+{{ end }}

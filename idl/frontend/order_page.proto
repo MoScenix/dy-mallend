@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package frontend.order;
+package frontend.center;
 
 import "api.proto";
 import "frontend/common.proto";
@@ -28,15 +28,15 @@ message DeleteResp {
 
 service OrderService {
   rpc OrderAuthChange(OrderAuthReq) returns (common.Empty) {
-    option (api.post)="/order";
+    option (api.post)="/center";
   }
   rpc OrderAuth(common.Empty) returns (common.Empty) {
-    option (api.get)="/order";
+    option (api.get)="/center";
   }
   rpc OrderProductPut(OrderProductPutReq) returns (common.Empty) {
-    option (api.post)="/order/product";
+    option (api.post)="/center/product";
   }
   rpc OrderProdectDelete(DeleteReq) returns (DeleteResp) {
-    option (api.post)="/order/product/delete";
+    option (api.post)="/center/product/delete";
   }
 }
