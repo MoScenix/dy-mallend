@@ -33,7 +33,6 @@ func (s *DeleteProductService) Run(req *product.DeleteProductReq) (resp *product
 		}, kerrors.NewBizStatusError(2004001, "you are not the owner of this product")
 	}
 	err = ProductQuery.DeleteProduct(int(req.Id))
-	//fmt.Println(DeleteProudct.Picture)
 	return &product.DeleteProductResp{
 		Success: true,
 		Picture: DeleteProudct.Picture,

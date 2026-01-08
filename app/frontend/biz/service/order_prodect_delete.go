@@ -31,7 +31,6 @@ func (h *OrderProdectDeleteService) Run(req *order.DeleteReq) (resp map[string]a
 		}, err
 	}
 	err = os.Remove("." + res.Picture)
-	//fmt.Println(res.Picture)
 	return map[string]any{
 		"success": res.Success,
 	}, err

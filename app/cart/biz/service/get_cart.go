@@ -2,10 +2,12 @@ package service
 
 import (
 	"context"
+	"errors"
 
 	"github.com/MoScenix/douyin-mall-backend/app/cart/biz/dal/mysql"
 	"github.com/MoScenix/douyin-mall-backend/app/cart/biz/model"
 	cart "github.com/MoScenix/douyin-mall-backend/rpc_gen/kitex_gen/cart"
+	"gorm.io/gorm"
 )
 
 type GetCartService struct {
@@ -19,9 +21,12 @@ func NewGetCartService(ctx context.Context) *GetCartService {
 func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err error) {
 	row, err := model.NewCartQuery(s.ctx, mysql.DB).GetByUser(req.UserId)
 	if err != nil {
-		return nil, err
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			err = nil
+		} else {
+			return nil, err
+		}
 	}
-
 	res := &cart.GetCartResp{
 		Cart: &cart.Cart{
 			UserId: req.UserId,

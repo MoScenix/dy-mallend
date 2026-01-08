@@ -80,7 +80,6 @@ func GetCart(ctx context.Context, c *app.RequestContext) {
 	var req cart.GetCartReq
 	err = c.BindAndValidate(&req)
 	if err != nil {
-		fmt.Println(err)
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
@@ -89,6 +88,5 @@ func GetCart(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-	fmt.Println(resp)
 	c.HTML(consts.StatusOK, "cart", utils.WarpResponse(ctx, c, resp))
 }

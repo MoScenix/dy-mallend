@@ -2,7 +2,6 @@ package order
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/biz/service"
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/biz/utils"
@@ -79,11 +78,9 @@ func OrderProdectDelete(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	resp, err := service.NewOrderProdectDeleteService(ctx, c).Run(&req)
-	fmt.Println(err)
 	if err != nil {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-	fmt.Println(resp)
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }

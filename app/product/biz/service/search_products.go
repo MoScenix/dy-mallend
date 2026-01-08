@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/MoScenix/douyin-mall-backend/app/product/biz/dal/mysql"
 	"github.com/MoScenix/douyin-mall-backend/app/product/biz/dal/redis"
@@ -37,6 +36,5 @@ func (s *SearchProductsService) Run(req *product.SearchProductsReq) (resp *produ
 			Price:       p.Price,
 		})
 	}
-	fmt.Println(resp.Results)
 	return resp, err
 }
