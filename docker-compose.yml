@@ -50,90 +50,90 @@ services:
     ports:
       - "3000:3000"
 
-  # user:
-  #   # image: app-user:dev
-  #   build:
-  #     context: .
-  #     dockerfile: docker_files/DockerFile.user
-  #   ports:
-  #     - "8083:8080"
-  #   environment:
-  #     - GO_ENV=online
-  #     - MYSQL_USER=root
-  #     - MYSQL_PASSWORD=YOUR_PASSWORD
-  #     - MYSQL_DATABASE=YOU_DB
-  #     - MYSQL_HOST=mysql
-  #   depends_on:
-  #     consul:
-  #       condition: service_healthy
-  #     mysql:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
+  user:
+    # image: app-user:dev
+    build:
+      context: .
+      dockerfile: docker_files/DockerFile.user
+    ports:
+      - "8083:8080"
+    environment:
+      - GO_ENV=online
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=YOUR_PASSWORD
+      - MYSQL_DATABASE=YOU_DB
+      - MYSQL_HOST=mysql
+    depends_on:
+      consul:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
       
 
-  # product:
-  #   # image: app-product:dev
-  #   build:
-  #     context: .
-  #     dockerfile: docker_files/DockerFile.product
-  #   ports:
-  #     - "8082:8080"
-  #   environment:
-  #     - GO_ENV=online
-  #     - MYSQL_USER=root
-  #     - MYSQL_PASSWORD=YOUR_PASSWORD
-  #     - MYSQL_DATABASE=YOU_DB
-  #     - MYSQL_HOST=mysql
-  #   depends_on:
-  #     consul:
-  #       condition: service_healthy
-  #     mysql:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
-  # cart:
-  #   # image: app-product:dev
-  #   build:
-  #     context: .
-  #     dockerfile: docker_files/DockerFile.cart
-  #   ports:
-  #     - "8084:8080"
-  #   environment:
-  #     - GO_ENV=online
-  #     - MYSQL_USER=root
-  #     - MYSQL_PASSWORD=YOUR_PASSWORD
-  #     - MYSQL_DATABASE=YOU_DB
-  #     - MYSQL_HOST=mysql
-  #   depends_on:
-  #     consul:
-  #       condition: service_healthy
-  #     mysql:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
+  product:
+    # image: app-product:dev
+    build:
+      context: .
+      dockerfile: docker_files/DockerFile.product
+    ports:
+      - "8082:8080"
+    environment:
+      - GO_ENV=online
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=YOUR_PASSWORD
+      - MYSQL_DATABASE=YOU_DB
+      - MYSQL_HOST=mysql
+    depends_on:
+      consul:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+  cart:
+    # image: app-product:dev
+    build:
+      context: .
+      dockerfile: docker_files/DockerFile.cart
+    ports:
+      - "8084:8080"
+    environment:
+      - GO_ENV=online
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=YOUR_PASSWORD
+      - MYSQL_DATABASE=YOU_DB
+      - MYSQL_HOST=mysql
+    depends_on:
+      consul:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
-  # frontend:
-  #   # image: app-frontend:dev
-  #   build:
-  #     context: .
-  #     dockerfile: docker_files/DockerFile.frontend
-  #   ports:
-  #     - "8080:8080"
-  #   environment:
-  #     - GO_ENV=online
-  #     - SESSION_SECRET=YOUR_SESSION_SECRET
-  #   depends_on:
-  #     consul:
-  #       condition: service_healthy
-  #     mysql:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
-  #     user:
-  #       condition: service_started
-  #     product:
-  #       condition: service_started
+  frontend:
+    # image: app-frontend:dev
+    build:
+      context: .
+      dockerfile: docker_files/DockerFile.frontend
+    ports:
+      - "8080:8080"
+    environment:
+      - GO_ENV=online
+      - SESSION_SECRET=YOUR_SESSION_SECRET
+    depends_on:
+      consul:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      user:
+        condition: service_started
+      product:
+        condition: service_started
         
 
 volumes:
