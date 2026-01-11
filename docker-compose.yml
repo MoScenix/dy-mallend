@@ -33,91 +33,108 @@ services:
       interval: 5s
       timeout: 3s
       retries: 30
-
-  user:
-    # image: app-user:dev
-    build:
-      context: .
-      dockerfile: docker_files/DockerFile.user
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./deploy/config/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
     ports:
-      - "8083:8080"
+      - "9090:9090"
+  grafana:
+    image: grafana/grafana:latest
     environment:
-      - GO_ENV=online
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=YOUR_PASSWORD
-      - MYSQL_DATABASE=YOU_DB
-      - MYSQL_HOST=mysql
-    depends_on:
-      consul:
-        condition: service_healthy
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    ports:
+      - "3000:3000"
+
+  # user:
+  #   # image: app-user:dev
+  #   build:
+  #     context: .
+  #     dockerfile: docker_files/DockerFile.user
+  #   ports:
+  #     - "8083:8080"
+  #   environment:
+  #     - GO_ENV=online
+  #     - MYSQL_USER=root
+  #     - MYSQL_PASSWORD=YOUR_PASSWORD
+  #     - MYSQL_DATABASE=YOU_DB
+  #     - MYSQL_HOST=mysql
+  #   depends_on:
+  #     consul:
+  #       condition: service_healthy
+  #     mysql:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
       
 
-  product:
-    # image: app-product:dev
-    build:
-      context: .
-      dockerfile: docker_files/DockerFile.product
-    ports:
-      - "8082:8080"
-    environment:
-      - GO_ENV=online
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=YOUR_PASSWORD
-      - MYSQL_DATABASE=YOU_DB
-      - MYSQL_HOST=mysql
-    depends_on:
-      consul:
-        condition: service_healthy
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-  cart:
-    # image: app-product:dev
-    build:
-      context: .
-      dockerfile: docker_files/DockerFile.cart
-    ports:
-      - "8084:8080"
-    environment:
-      - GO_ENV=online
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=YOUR_PASSWORD
-      - MYSQL_DATABASE=YOU_DB
-      - MYSQL_HOST=mysql
-    depends_on:
-      consul:
-        condition: service_healthy
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+  # product:
+  #   # image: app-product:dev
+  #   build:
+  #     context: .
+  #     dockerfile: docker_files/DockerFile.product
+  #   ports:
+  #     - "8082:8080"
+  #   environment:
+  #     - GO_ENV=online
+  #     - MYSQL_USER=root
+  #     - MYSQL_PASSWORD=YOUR_PASSWORD
+  #     - MYSQL_DATABASE=YOU_DB
+  #     - MYSQL_HOST=mysql
+  #   depends_on:
+  #     consul:
+  #       condition: service_healthy
+  #     mysql:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  # cart:
+  #   # image: app-product:dev
+  #   build:
+  #     context: .
+  #     dockerfile: docker_files/DockerFile.cart
+  #   ports:
+  #     - "8084:8080"
+  #   environment:
+  #     - GO_ENV=online
+  #     - MYSQL_USER=root
+  #     - MYSQL_PASSWORD=YOUR_PASSWORD
+  #     - MYSQL_DATABASE=YOU_DB
+  #     - MYSQL_HOST=mysql
+  #   depends_on:
+  #     consul:
+  #       condition: service_healthy
+  #     mysql:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
 
-  frontend:
-    # image: app-frontend:dev
-    build:
-      context: .
-      dockerfile: docker_files/DockerFile.frontend
-    ports:
-      - "8080:8080"
-    environment:
-      - GO_ENV=online
-      - SESSION_SECRET=YOUR_SESSION_SECRET
-    depends_on:
-      consul:
-        condition: service_healthy
-      mysql:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-      user:
-        condition: service_started
-      product:
-        condition: service_started
+  # frontend:
+  #   # image: app-frontend:dev
+  #   build:
+  #     context: .
+  #     dockerfile: docker_files/DockerFile.frontend
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - GO_ENV=online
+  #     - SESSION_SECRET=YOUR_SESSION_SECRET
+  #   depends_on:
+  #     consul:
+  #       condition: service_healthy
+  #     mysql:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     user:
+  #       condition: service_started
+  #     product:
+  #       condition: service_started
+        
 
 volumes:
   mysql_data:

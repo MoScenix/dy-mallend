@@ -6,22 +6,23 @@ import (
 
 	"github.com/MoScenix/douyin-mall-backend/app/cart/biz/dal"
 	"github.com/MoScenix/douyin-mall-backend/app/cart/conf"
+	"github.com/MoScenix/douyin-mall-backend/common/mtl"
+	serversuit "github.com/MoScenix/douyin-mall-backend/common/serversuit"
 	"github.com/MoScenix/douyin-mall-backend/rpc_gen/kitex_gen/cart/cartservice"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	"github.com/joho/godotenv"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
-	consul "github.com/kitex-contrib/registry-consul"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
 	godotenv.Load()
+	mtl.InitMetric(conf.GetConf().Kitex.Service, conf.GetConf().Kitex.MetricsPort, conf.GetConf().Registry.RegistryAddress[0])
 	opts := kitexInit()
-
+	//rpc.InitClient()
 	svr := cartservice.NewServer(new(CartServiceImpl), opts...)
 
 	err := svr.Run()
@@ -38,16 +39,14 @@ func kitexInit() (opts []server.Option) {
 		panic(err)
 	}
 	opts = append(opts, server.WithServiceAddr(addr))
-
+	opts = append(opts, server.WithSuite(&serversuit.CommonServerSuilt{
+		ServerName:   conf.GetConf().Kitex.Service,
+		RegistryAddr: conf.GetConf().Registry.RegistryAddress[0],
+	}))
 	// service info
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
-	reg, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		hlog.Fatal(err)
-	}
-	opts = append(opts, server.WithRegistry(reg))
 	// klog
 	logger := kitexlogrus.NewLogger()
 	klog.SetLogger(logger)

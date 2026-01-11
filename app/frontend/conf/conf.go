@@ -22,11 +22,12 @@ type Consul struct {
 }
 
 type Config struct {
-	Env    string
-	Consul Consul `yaml:"consul"`
-	Hertz  Hertz  `yaml:"hertz"`
-	MySQL  MySQL  `yaml:"mysql"`
-	Redis  Redis  `yaml:"redis"`
+	Env      string
+	Consul   Consul   `yaml:"consul"`
+	Hertz    Hertz    `yaml:"hertz"`
+	MySQL    MySQL    `yaml:"mysql"`
+	Redis    Redis    `yaml:"redis"`
+	Registry Registry `yaml:"registry"`
 }
 
 type MySQL struct {
@@ -51,6 +52,12 @@ type Hertz struct {
 	LogMaxSize      int    `yaml:"log_max_size"`
 	LogMaxBackups   int    `yaml:"log_max_backups"`
 	LogMaxAge       int    `yaml:"log_max_age"`
+	MetricsPort     string `yaml:"metrics_port"`
+}
+type Registry struct {
+	RegistryAddress []string `yaml:"registry_address"`
+	Username        string   `yaml:"username"`
+	Password        string   `yaml:"password"`
 }
 
 // GetConf gets configuration instance

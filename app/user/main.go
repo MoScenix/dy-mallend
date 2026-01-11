@@ -6,20 +6,21 @@ import (
 
 	"github.com/MoScenix/douyin-mall-backend/app/user/biz/dal"
 	"github.com/MoScenix/douyin-mall-backend/app/user/conf"
+	"github.com/MoScenix/douyin-mall-backend/common/mtl"
+	"github.com/MoScenix/douyin-mall-backend/common/serversuit"
 	"github.com/MoScenix/douyin-mall-backend/rpc_gen/kitex_gen/user/userservice"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
 	"github.com/joho/godotenv"
 	kitexlogrus "github.com/kitex-contrib/obs-opentelemetry/logging/logrus"
-	consul "github.com/kitex-contrib/registry-consul"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
 func main() {
 	godotenv.Load()
+	mtl.InitMetric(conf.GetConf().Kitex.Service, conf.GetConf().Kitex.MetricsPort, conf.GetConf().Registry.RegistryAddress[0])
 	opts := kitexInit()
 
 	svr := userservice.NewServer(new(UserServiceImpl), opts...)
@@ -39,16 +40,17 @@ func kitexInit() (opts []server.Option) {
 		panic(err)
 	}
 	opts = append(opts, server.WithServiceAddr(addr))
-
+	opts = append(opts, server.WithSuite(&serversuit.CommonServerSuilt{
+		ServerName:   conf.GetConf().Kitex.Service,
+		RegistryAddr: conf.GetConf().Registry.RegistryAddress[0],
+	}))
 	// service info
 	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
 		ServiceName: conf.GetConf().Kitex.Service,
 	}))
-	reg, err := consul.NewConsulRegister(conf.GetConf().Registry.RegistryAddress[0])
-	if err != nil {
-		hlog.Fatal(err)
-	}
-	opts = append(opts, server.WithRegistry(reg))
+	opts = append(opts, server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
+		ServiceName: conf.GetConf().Kitex.Service,
+	}))
 	// klog
 	logger := kitexlogrus.NewLogger()
 	klog.SetLogger(logger)

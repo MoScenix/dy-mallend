@@ -12,6 +12,7 @@ import (
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/conf"
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/infra/rpc"
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/middleware"
+	"github.com/MoScenix/douyin-mall-backend/common/mtl"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/middlewares/server/recovery"
 	"github.com/cloudwego/hertz/pkg/app/server"
@@ -34,6 +35,7 @@ func main() {
 	// init dal
 	// dal.Init()
 	godotenv.Load()
+	mtl.InitMetric("frontend", conf.GetConf().Hertz.MetricsPort, conf.GetConf().Registry.RegistryAddress[0])
 	rpc.Init()
 	address := conf.GetConf().Hertz.Address
 	h := server.New(server.WithHostPorts(address))
