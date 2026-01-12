@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/biz/utils"
 	cart "github.com/MoScenix/douyin-mall-backend/app/frontend/hertz_gen/frontend/cart"
@@ -24,7 +23,6 @@ func NewGetCartService(Context context.Context, RequestContext *app.RequestConte
 func (h *GetCartService) Run(req *cart.GetCartReq) (resp map[string]any, err error) {
 	row, err := rpc.CartClient.GetCart(h.Context, &rpccart.GetCartReq{UserId: uint64(h.Context.Value(utils.UserIdKey).(float64))})
 	if err != nil {
-		fmt.Println(err)
 		return
 	}
 	var p []uint32

@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package frontend.orders;
+
+option go_package = "frontend/orders";
+
+import "api.proto";
+
+import "frontend/common.proto";
+
+message Orders {
+
+  repeated Order orders = 1[(api.body) = "orders"];
+}
+
+message Order {
+  float              sum   = 2[(api.body) = "sum"];
+  repeated OrderItem items = 1[(api.body) = "items"];
+}
+
+message OrderItem {
+  uint32 ProductId = 1[(api.body) = "product_id"];
+  uint32 Quantity  = 2[(api.body) = "quantity"];
+  float  Price     = 3[(api.body) = "price"];
+  string Picture   = 4[(api.body) = "picture"];
+  string Name      = 5[(api.body) = "name"];
+}
+
+service OrdersService {
+  rpc GetOrders(common.Empty) returns (Orders) {
+    option (api.get) = "/orders";
+  }
+  rpc AddOrder(Order) returns (common.Empty) {
+    option (api.post) = "/orders";
+  }
+}

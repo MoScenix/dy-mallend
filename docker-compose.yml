@@ -112,7 +112,27 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
-
+  orders:
+    # image: app-user:dev
+    build:
+      context: .
+      dockerfile: docker_files/DockerFile.orders
+    ports:
+      - "8891:8888"
+    environment:
+      - GO_ENV=online
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=YOUR_PASSWORD
+      - MYSQL_DATABASE=YOU_DB
+      - MYSQL_HOST=mysql
+    depends_on:
+      consul:
+        condition: service_healthy
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    
   frontend:
     # image: app-frontend:dev
     build:
@@ -134,7 +154,9 @@ services:
         condition: service_started
       product:
         condition: service_started
-        
+      orders:
+        condition: service_started
+    
 
 volumes:
   mysql_data:

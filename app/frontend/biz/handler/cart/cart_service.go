@@ -2,7 +2,6 @@ package cart
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/biz/service"
 	"github.com/MoScenix/douyin-mall-backend/app/frontend/biz/utils"
@@ -27,7 +26,6 @@ func AddItem(ctx context.Context, c *app.RequestContext) {
 		utils.SendErrResponse(ctx, c, consts.StatusOK, err)
 		return
 	}
-	fmt.Println(resp)
 	utils.SendSuccessResponse(ctx, c, consts.StatusOK, resp)
 }
 

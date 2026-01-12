@@ -46,7 +46,6 @@ func main() {
 	h.GET("/ping", func(c context.Context, ctx *app.RequestContext) {
 		ctx.JSON(consts.StatusOK, utils.H{"ping": "pong"})
 	})
-
 	router.GeneratedRegister(h)
 	h.LoadHTMLGlob("template/*")
 	h.Static("/template", "./template")
@@ -124,4 +123,5 @@ func registerMiddleware(h *server.Hertz) {
 	// cores
 	h.Use(cors.Default())
 	middleware.Register(h)
+
 }

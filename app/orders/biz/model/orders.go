@@ -9,7 +9,7 @@ import (
 type Order struct {
 	gorm.Model
 	UserID     uint32      `gorm:"index;type:int;not null"`
-	OrderItems []OrderItem `gorm:"foreignKey:OrerID;"`
+	OrderItems []OrderItem `gorm:"foreignKey:OrderID"`
 }
 
 func (o *Order) TableName() string {

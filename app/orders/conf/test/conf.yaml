@@ -1,11 +1,12 @@
 kitex:
   service: "orders"
-  address: ":8888"
+  address: ":8891"
   log_level: info
   log_file_name: "log/kitex.log"
   log_max_size: 10
   log_max_age: 3
   log_max_backups: 50
+  metrics_port : ":9999"
 
 registry:
   registry_address:

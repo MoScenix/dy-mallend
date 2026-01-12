@@ -6,7 +6,7 @@ kitex:
   log_max_size: 10
   log_max_age: 3
   log_max_backups: 50
-
+  metrics_port : ":9999"
 registry:
   registry_address:
     - consul:8500
@@ -17,7 +17,7 @@ mysql:
   dsn: "%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local"
 
 redis:
-  address: "127.0.0.1:6379"
+  address: "redis:6379"
   username: ""
   password: ""
   db: 0

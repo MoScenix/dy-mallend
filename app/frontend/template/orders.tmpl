@@ -1,0 +1,71 @@
+{{ define "orders" }}
+{{ template "header" . }}
+
+<div class="max-w-6xl mx-auto pb-24 px-[3%] min-h-screen">
+    <div class="py-10">
+        <h1 class="text-4xl font-black text-slate-900 tracking-tight">My Orders</h1>
+        <p class="text-slate-500 mt-2 font-medium">History of your successful purchases</p>
+    </div>
+
+    <div class="space-y-10">
+        {{ if not .orders }}
+        <div class="text-center py-24 bg-slate-50 rounded-[40px] border-2 border-dashed border-slate-200">
+            <p class="text-slate-500 text-lg">Your order history is empty.</p>
+        </div>
+        {{ else }}
+            
+            {{ range .orders }}
+            <div class="bg-white border border-slate-100 rounded-[40px] overflow-hidden shadow-sm">
+                
+                <div class="bg-slate-50/50 px-8 py-6 flex justify-between items-center border-b border-slate-100">
+                    <div class="flex items-center gap-4">
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700 uppercase tracking-widest">
+                            Order Paid
+                        </span>
+                        <span class="text-slate-300">|</span>
+                        <span class="text-slate-500 text-sm font-medium">{{ len .Items }} Items</span>
+                    </div>
+                    <div class="flex items-baseline gap-2">
+                        <span class="text-slate-400 text-xs font-bold uppercase">Total Paid:</span>
+                        <span class="text-2xl font-black text-indigo-600">${{ printf "%.2f" .Sum }}</span>
+                    </div>
+                </div>
+
+                <div class="px-8 py-2">
+                    {{ range .Items }}
+                    <div class="flex items-center gap-6 py-6 border-b border-slate-50 last:border-0">
+                        <div class="w-20 h-20 bg-white rounded-2xl border border-slate-100 flex-shrink-0">
+                            <img src="{{ .Picture }}" class="w-full h-full object-contain p-2">
+                        </div>
+
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-slate-800 text-lg leading-tight">{{ .Name }}</h4>
+                            <p class="text-xs text-slate-400 mt-1 font-mono">Product ID: {{ .ProductId }}</p>
+                        </div>
+
+                        <div class="hidden md:flex flex-col items-end min-w-[100px]">
+                            <span class="text-[10px] font-bold text-slate-300 uppercase mb-1">Price</span>
+                            <span class="font-semibold text-slate-600">${{ printf "%.2f" .Price }}</span>
+                        </div>
+
+                        <div class="flex flex-col items-end min-w-[80px]">
+                            <span class="text-[10px] font-bold text-slate-300 uppercase mb-1">Quantity</span>
+                            <span class="font-bold text-slate-800 text-lg">x{{ .Quantity }}</span>
+                        </div>
+
+                        <div class="flex flex-col items-end min-w-[120px]">
+                            <span class="text-[10px] font-bold text-slate-300 uppercase mb-1">Subtotal</span>
+                            <span class="font-bold text-slate-900 text-lg">${{ printf "%.2f" .Price }}</span>
+                        </div>
+                    </div>
+                    {{ end }}
+                </div>
+            </div>
+            {{ end }}
+
+        {{ end }}
+    </div>
+</div>
+
+{{ template "footer" . }}
+{{ end }}

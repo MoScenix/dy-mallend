@@ -12,11 +12,16 @@ func TestAddProduct_Run(t *testing.T) {
 	s := NewAddProductService(ctx)
 	// init req and assert value
 
-	req := &product.AddProductReq{}
+	req := &product.AddProductReq{
+		Name:        "test",
+		Price:       1.0,
+		Picture:     "test",
+		Description: "test",
+		UserId:      1,
+	}
 	resp, err := s.Run(req)
 	t.Logf("err: %v", err)
 	t.Logf("resp: %v", resp)
 
 	// todo: edit your unit test
-
 }

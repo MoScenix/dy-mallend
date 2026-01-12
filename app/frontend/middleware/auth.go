@@ -27,7 +27,7 @@ func Auth() app.HandlerFunc {
 	return func(ctx context.Context, c *app.RequestContext) {
 		path := c.Path()
 		if ctx.Value(utils.UserIdKey) == nil {
-			if strings.HasPrefix(string(path), "/center") {
+			if strings.HasPrefix(string(path), "/center") || strings.HasPrefix(string(path), "/cart") {
 				c.Redirect(consts.StatusFound, []byte("/sign-in"))
 				c.Abort()
 				return

@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/MoScenix/douyin-mall-backend/app/cart/biz/dal/mysql"
 	"github.com/MoScenix/douyin-mall-backend/app/cart/biz/model"
@@ -20,7 +19,6 @@ func NewGetCartService(ctx context.Context) *GetCartService {
 
 // Run create note info
 func (s *GetCartService) Run(req *cart.GetCartReq) (resp *cart.GetCartResp, err error) {
-	fmt.Println(111)
 	row, err := model.NewCartQuery(s.ctx, mysql.DB).GetByUser(req.UserId)
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {

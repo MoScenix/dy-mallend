@@ -4,7 +4,9 @@ package orders;
 
 option go_package = "/orders";
 
-message GetOrdersReq {}
+message GetOrdersReq {
+  uint32 UserId = 1;
+}
 
 message GetOrdersResp {
   repeated Order orders = 1;
@@ -19,6 +21,7 @@ message OrderItem {
   uint32 Quantity  = 2;
 }
 message AddOrderReq {
+  uint32 UserId = 2;
   repeated OrderItem items = 1;
 }
 message AddOrderResp {}
