@@ -8,6 +8,7 @@ ENV GOSUMDB=sum.golang.google.cn
 
 COPY app/product/go.mod app/product/go.sum ./app/product/
 COPY rpc_gen ./rpc_gen
+COPY common ./common
 
 RUN cd app/product && go mod download && go mod verify
 
